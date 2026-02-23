@@ -17,7 +17,12 @@ import java.util.Scanner; //Biblioteca para ler a entrada do usuário.
             System.out.println("O numero "+num+" e negativo.");
         }
         else {
+            if (num == 0) {
+                System.out.println("O numero "+num+" e zero.");
+            }
+            else {  
             System.out.println("O numero "+num+" e positivo.");
+            }
         }
 
         //Fechar o scanner para evitar vazamento de memória.
