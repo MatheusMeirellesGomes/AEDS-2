@@ -4,21 +4,23 @@
 
 //Incluir bibliotecas necessárias. 
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 
 //Função para verificar se a string é um palíndromo. 
-int palidromo(char texto[], int tam) { //Passando como parâmetro a string a ser verificada e seu tamanho. 
+bool palidromo(char texto[], int tam) { //Passando como parâmetro a string a ser verificada e seu tamanho. 
     //Inicializar os índices para comparar os caracteres da string, sendo i o índice do início da string e j o índice do final da string.
     int i = 0, j = tam - 1; //j recebe o tamanho - 1 para obter o índice do último caractere. 
     //Enquanto o índice i for menor que o índice j, compara os caracteres da string. 
     while (i < j) {
         //Se a string tiver um caractere diferente, retorna false, indicando que não é um palíndromo. 
         if (texto[i] != texto[j]) {
-            return 0; 
+            return false; 
         }
         i++; //Incrementar o índice i para comparar o próximo caractere da string.
         j--; //Decrementar o índice j para comparar o próximo caractere da string.
     }
-    return 1; //Retorna verdadeiro se for palíndromo. 
+    return true; //Retorna verdadeiro se for palíndromo. 
 }
 
 //Função principal do programa.
