@@ -8,13 +8,13 @@
 #include <stdbool.h>
 
 //Função para verificar se a string é um palíndromo. 
-bool palidromo(char texto[]) { //Passando como parâmetro a string a ser verificada. 
+bool palidromo(char texto[], int tam) { //Passando como parâmetro a string a ser verificada e seu tamanho. 
     //Inicializar os índices para comparar os caracteres da string, sendo i o índice do início da string e j o índice do final da string.
-    int i = 0, j = strlen(texto) - 1; //Usar o strlen para obter o tamanho da string e subtrair 1 para obter o índice do último caractere. 
+    int i = 0, j = tam - 1; //j recebe o tamanho - 1 para obter o índice do último caractere. 
     //Enquanto o índice i for menor que o índice j, compara os caracteres da string. 
     while (i < j) {
         //Se a string tiver um caractere diferente, retorna false, indicando que não é um palíndromo. 
-        if  (texto[i] != texto[j]) {
+        if (texto[i] != texto[j]) {
             return false; 
         }
         i++; //Incrementar o índice i para comparar o próximo caractere da string.
@@ -36,7 +36,8 @@ int main() {
 
         //Verificar se é um palíndromo usando a função palidromo, mas não processar se for "FIM".
         if (strcmp(texto, "FIM") != 0) { //Se a string não for "FIM", verificar se é palíndromo.
-            if (palidromo(texto)) { //Chamar a função palidromo para verificar se a string é um palíndromo. 
+            int tam = strlen(texto);
+            if (palidromo(texto, tam)) { //Chamar a função palidromo para verificar se a string é um palíndromo. 
                 printf("SIM\n"); //Se for um palíndromo, imprimir "SIM" na saída padrão. 
             } else {
                 printf("NAO\n"); //Se não for um palíndromo, imprimir "NAO" na saída padrão. 
