@@ -31,13 +31,16 @@ int main() {
     //Loop para ler as linhas de entrada até que seja lida a palavra "FIM". 
     do {
         //Usar fgets para ler a linha de entrada e armazenar na variável str. Fgets é para ler string com espaços(frases). 
-        fgets(texto, 1000, stdin); //Ler a string de entrada, salvando na variável texto, com tamanho máximo de 100 caracteres e lendo da entrada padrão (stdin).
+        fgets(texto, 1000, stdin); //Ler a string de entrada, salvando na variável texto, com tamanho máximo de 1000 caracteres e lendo da entrada padrão (stdin).
+        texto[strcspn(texto, "\n")] = '\0'; //Remover o caractere de nova linha (\n) do final da string.
 
-        //Verificar se é um palíndromo usando a função palidromo.
-        if (palidromo(texto)) { //Chamar a função palidromo para verificar se a string é um palíndromo. 
-            printf("SIM\n"); //Se for um palíndromo, imprimir "SIM" na saída padrão. 
-        } else {
-            printf("NAO\n"); //Se não for um palíndromo, imprimir "NAO" na saída padrão. 
+        //Verificar se é um palíndromo usando a função palidromo, mas não processar se for "FIM".
+        if (strcmp(texto, "FIM") != 0) { //Se a string não for "FIM", verificar se é palíndromo.
+            if (palidromo(texto)) { //Chamar a função palidromo para verificar se a string é um palíndromo. 
+                printf("SIM\n"); //Se for um palíndromo, imprimir "SIM" na saída padrão. 
+            } else {
+                printf("NAO\n"); //Se não for um palíndromo, imprimir "NAO" na saída padrão. 
+            }
         }
-    } while (strcmp(texto, "FIM\n") != 0); //Usar a função strcmp para comparar a string de entrada com a palavra "FIM". O loop continua enquanto as strings forem diferentes.
+    } while (strcmp(texto, "FIM") != 0); //Usar a função strcmp para comparar a string de entrada com a palavra "FIM". O loop continua enquanto as strings forem diferentes.
 }
