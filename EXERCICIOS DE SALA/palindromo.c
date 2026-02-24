@@ -37,8 +37,8 @@ int main() {
         }
         texto[tam] = '\0';
         
-        //Verificar se é "FIM" manualmente (mais rápido que strcmp)
-        if (tam == 3 && texto[0] == 'F' && texto[1] == 'I' && texto[2] == 'M') {
+        //Verificar se a linha de entrada é a palavra "FIM", se for, encerrar o loop.)
+        if (strcmp(texto, "FIM") == 0) { //Usar a função strcmp para comparar a string de entrada com a palavra "FIM". Se as strings forem iguais, strcmp retorna 0.
             break;
         }
         
