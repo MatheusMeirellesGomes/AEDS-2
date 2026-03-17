@@ -25,21 +25,30 @@ class Ciframento{
         return cifrada; 
     }
 
+    //Criar um método para verificar se aultima string é FIM, ou seja, se a string lida é igual a "FIM".
+    public static boolean isFIM (String str) {
+        //Verificar se a string lida é igual a "FIM". Lembrando que nao pode usar equals, e nem break no if, e apenas um return em cada procedimento. 
+        return str.length() == 3 && str.charAt(0) == 'F' && str.charAt(1) == 'I' && str.charAt(2) == 'M';
+    }
+
     //Método principal. 
     public static void main (String [] args) {
         //Criar um objeto Scanner para ler a entrada do arquivo de texto pub.in. 
         Scanner sc = new Scanner(System.in); 
 
-        //Ler cada linha do arquivo pub.in e aplicar o método de ciframento a cada linha. 
-        while (sc.hasNextLine()) {
-            //Ler a linha atual do arquivo de texto. 
-            String linha = sc.nextLine(); 
+        //Ler a primeira linha do arquivo de texto pu.in. 
+        String linha = sc.nextLine();
 
-            //Aplicar o método de ciframento a linha lida. 
+        //Continuar lend cada linha do arquivo, enquanto a linha lida nao for "FIM". 
+        while (!isFIM(linha)) { 
+            //Chamar o método de ciframento para cifrar a linha lida.
             String linhaCifrada = ciframento(linha); 
 
-            //Escrever a linha cifrada no arquivo de texto pub.out. 
-            System.out.println(linhaCifrada); //Imprimir a linha cifrada na saída padrão.
+            //Imprimir a linha cifrada. 
+            System.out.println(linhaCifrada); //Imprimir a linha cifrada usando o método println da classe MyIO.
+
+            //Ler a proxima linha para a proxima iteracao do loop.
+            linha = sc.nextLine();
         }
 
         //Fechar o objeto Scanner. 

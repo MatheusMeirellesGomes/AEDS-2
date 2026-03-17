@@ -15,14 +15,19 @@ class Ciframento{
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in); 
+        //Inicializar variável para receber a string do usuário
+        String str; 
 
-        while (sc.hasNextLine()) {
-            String linha = sc.nextLine(); 
-            String LinhaCifrada = ciframento(linha); 
+        //Criar objeto Scanner para ler a entrada do usuário
+        Scanner sc = new Scanner(System.in);
 
-            System.out.println(LinhaCifrada);
-        }
+        //Ler a string digitalizada pelo usuário
+        str = sc.nextLine();
+
+        //Chamar o método de ciframento e imprimir o resultado
+        String resultado = ciframento(str);
+
+        System.out.println(resultado);
 
         sc.close(); 
     }
