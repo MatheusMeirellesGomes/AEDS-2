@@ -50,7 +50,7 @@ int main() {
     char str[1000]; 
 
     //Ler a primeira string. 
-    scanf( "%[^\n]", str); //Ler a string até encontrar o \n, ou seja, ler a linha inteira.
+    scanf(" %[^\n]", str); //Ler a string até encontrar o \n, ou seja, ler a linha inteira.
 
     //Loop para ler as strings até encontrar a string FIM. 
     while (!isFim(str)) { //Enquanto a string não for FIM e diferente de uma linha em branco.
@@ -61,10 +61,10 @@ int main() {
         inverte(tam, str);
 
         //Imprimir a string invertida. 
-        printf("%s", str);
+        printf("%s\n", str);
 
         //Continuar lendo as próximas strings.
-        scanf( "%[^\n]", str );
+        scanf(" %[^\n]", str );
     }
 
     return 0; 
