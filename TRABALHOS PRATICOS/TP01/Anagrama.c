@@ -22,7 +22,7 @@ int tamanho (char str[]) {
 
 //Função para remover os espaços das strings e o hífen. 
 void removeEspaco (char str[]) {
-    int i = 0, j = 0; //Contadores para percorrer a string.
+    int i = 0, j = 0; //i = percorre a string original, j = percorre a string sem espaços.
     while (str[i] != '\0') { //Enquanto não chegar no final da string
         if (str[i] != ' ' && str[i] != '-') { //Se o caractere não for espaço ou hífen
             str[j++] = str[i]; //Copia o caractere para a posição j e incrementa j.
@@ -37,7 +37,7 @@ void minusculo (char str[]) {
     int i = 0; //Contador para percorrer a string.
     while (str[i] != '\0') { //Enquanto não chegar no final da string
         if (str[i] >= 'A' && str[i] <= 'Z') { //Se o caractere for uma letra maiúscula
-            str[i] = str[i] + 32; //Converte para minúscula.
+            str[i] += 32; //Converte para minúscula.
         }
         i++; //Incrementa i.
     }
@@ -46,8 +46,8 @@ void minusculo (char str[]) {
 //Função para ordenar as letras das strings.
 void ordenar (char str[]) {
     char temp; //Variável temporária para a troca de caracteres.
-    int n = tamanho(str); //Tamanho da string.
-    for (int i = 0; i < n - 1; i++) { //Percorre a string até o penúltimo caractere.
+    int n = tamanho(str); //Tamanho da string = 4, de acordo com meu exemplo, pois "amor" tem 4 letras.
+    for (int i = 0; i < n - 1; i++) { //Percorre a string até o penúltimo caractere, pois o último já estará ordenado.
         for (int j = 0; j < n - i - 1; j++) { //Percorre a string até o último caractere não ordenado.
             if (str[j] > str[j + 1]) { //Se o caractere atual for maior que o próximo
                 temp = str[j]; //Armazena o caractere atual na variável temporária.
@@ -76,27 +76,27 @@ void separar (char str[], char str1[], char str2[]) {
 }   
 
 //Função para verificar se as strings são anagramas.
-bool anagrama (char str1[], char str2[]) {
+bool anagrama (char str1[], char str2[]) { //Recebe as duas strings. Ex: str1 = "Roma" e str2 = " - Amor", por ja foi separadas. 
     //Remover os espaços e o hífen das strings.
-    removeEspaco(str1);
-    removeEspaco(str2);
-    
+    removeEspaco(str1); //str1= "Roma" mudou nada, ja que nao tem espaço ou hífen. 
+    removeEspaco(str2); //str2 = "Amor" mudou, pois removeu o espaço e o hífen.
+
     //Verificar se as strings têm o mesmo tamanho. 
     if (tamanho(str1) != tamanho(str2)) { //Se os tamanhos forem diferentes
         return false; //Retorna false.
     }
 
     //Converter as letras para minúsculas.
-    minusculo(str1);
-    minusculo(str2);
+    minusculo(str1); //str1 = "roma" mudou, pois converteu as letras para minúsculas.
+    minusculo(str2); //str2 = "amor" mudou, pois converteu as letras para minúsculas.
 
     //Ordenar as letras das strings.
-    ordenar(str1);
-    ordenar(str2);
+    ordenar(str1); //str1 = "amor" mudou, pois ordenou as letras em ordem alfabética.
+    ordenar(str2); //str2 = "amor" não mudou, pois as letras já estavam em ordem alfabética.
 
     //Verificar se as strings são iguais.
-    for (int i = 0; i < tamanho(str1); i++) {
-        if (str1[i] != str2[i]) {
+    for (int i = 0; i < tamanho(str1); i++) { //Percorre a string, como elas têm o mesmo tamanho, pode usar o tamanho de qualquer uma delas.
+        if (str1[i] != str2[i]) { //Se tiver algum caractere diferente. 
             return false;
         }
     }
@@ -105,11 +105,11 @@ bool anagrama (char str1[], char str2[]) {
 
 //Função principal.
 int main() {
-    char str[100]; //String para armazenar a entrada.
-    char str1[50], str2[50]; //Strings para armazenar as duas palavras.
+    char str[100]; //String para armazenar a entrada. Ex: "Roma - Amor"
+    char str1[50], str2[50]; //Strings para armazenar as duas palavras. 
 
     //Ler a string de entrada.
-    scanf(" %[^\n]", str);
+    scanf(" %[^\n]", str); 
 
     //Loop para processar as entradas até encontrar "FIM".
     while (!isFim(str)) {
