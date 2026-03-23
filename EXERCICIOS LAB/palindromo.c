@@ -40,11 +40,9 @@ int main() {
     //Inicializar variável. 
     char str[100]; 
 
-    //Ler a primeira string. 
-    scanf (" %[^\n]", str);
+    //Loop de leitura até EOF. 
+    while (scanf (" %[^\n]", str) == 1 && !isFim(str)) { //Enquanto não chegar no fim do arquivo.
 
-    //Loop. 
-    while (!isFim(str)) {
         //Verificar se é palíndromo. 
         if (isPalindromo(str)) {
             printf("SIM\n");
@@ -52,9 +50,6 @@ int main() {
         else {
             printf("NAO\n");
         }
-
-        //Ler a próxima string.
-        scanf (" %[^\n]", str);
     }
     return 0; 
 }
