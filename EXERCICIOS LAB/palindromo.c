@@ -50,7 +50,7 @@ int main() {
             printf("SIM\n");
         }
         else {
-            printf("NÃO\n");
+            printf("NAO\n");
         }
 
         //Ler a próxima string.
