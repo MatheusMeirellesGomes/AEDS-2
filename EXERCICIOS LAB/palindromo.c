@@ -7,48 +7,54 @@
 #include <string.h>
 #include <stdbool.h>
 
-//Função para verificar se a string é um palíndromo. 
-bool palidromo(char texto[], int tam) { //Passando como parâmetro a string a ser verificada e seu tamanho. 
-    //Inicializar os índices para comparar os caracteres da string, sendo i o índice do início da string e j o índice do final da string.
-    int i = 0, j = tam - 1; //j recebe o tamanho - 1 para obter o índice do último caractere. 
-    //Enquanto o índice i for menor que o índice j, compara os caracteres da string. 
-    while (i < j) {
-        //Se a string tiver um caractere diferente, retorna false, indicando que não é um palíndromo. 
-        if (texto[i] != texto[j]) {
-            return false; 
-        }
-        i++; //Incrementar o índice i para comparar o próximo caractere da string.
-        j--; //Decrementar o índice j para comparar o próximo caractere da string.
-    }
-    return true; //Retorna verdadeiro se for palíndromo. 
+//Função para o FIM do código. 
+bool isFim (char str[]) {
+    return (str[0] == 'F' && str[1] == 'I' && str[2] == 'M' && str[3] == '\0'); 
 }
 
-//Função principal do programa.
-int main() {
-    //Inicializar variáveis. 
-    char texto[1000]; //Array estático para armazenar a string de entrada. 
+//Função para o tamanho da string. 
+int tamanho (char str[]) {
+    int i = 0; //Contador para o tamanho da string.
+    while (str[i] != '\0') { //Enquanto não chegar no final da string
+        i++; //Incrementa o contador.
+    }
+    return i; //Retorna o tamanho da string.
+}
 
-    //Loop para ler as linhas de entrada até que seja lida a palavra "FIM". 
-    while (fgets(texto, 1000, stdin)) {
-        //Calcular tamanho e remover \n manualmente (mais rápido que strcspn)
-        int tam = 0;
-        while (texto[tam] != '\n' && texto[tam] != '\0') {
-            tam++;
-        }
-        texto[tam] = '\0';
-        
-        //Verificar se a linha de entrada é a palavra "FIM", se for, encerrar o loop.)
-        if (strcmp(texto, "FIM") == 0) { //Usar a função strcmp para comparar a string de entrada com a palavra "FIM". Se as strings forem iguais, strcmp retorna 0.
-            break;
-        }
-        
-        //Verificar se é palíndromo
-        if (palidromo(texto, tam)) {
-            printf("SIM\n");
-        } else {
-            printf("NAO\n");
+//Função para ver se é palíndromo. 
+bool isPalindromo (char str[]) {
+    //Inicializar o tamanho. 
+    int n = tamanho(str); 
+
+    //Loop. 
+    for (int i = 0; i < n / 2; i++) { //Do primeiro caractere até a metade da string, comparando o caractere atual com o correspondente do outro lado da string.
+        if (str[i] != str[n - i - 1]) { //Se o caractere atual for diferente do caractere correspondente do outro lado da string
+            return false; 
         }
     }
-    
-    return 0;
+    return true; 
+}
+
+//Função Principal. 
+int main() {
+    //Inicializar variável. 
+    char str[100]; 
+
+    //Ler a primeira string. 
+    scanf (" %[^\n]", str);
+
+    //Loop. 
+    while (!isFim(str)) {
+        //Verificar se é palíndromo. 
+        if (isPalindromo(str)) {
+            printf("SIM\n");
+        }
+        else {
+            printf("NÃO\n");
+        }
+
+        //Ler a próxima string.
+        scanf (" %[^\n]", str);
+    }
+    return 0; 
 }
