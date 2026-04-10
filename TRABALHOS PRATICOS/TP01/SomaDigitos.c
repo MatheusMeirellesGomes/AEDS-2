@@ -5,11 +5,6 @@ de entrada, escreva uma linha de saída com o resultado da soma dos dígitos. Se
 #include <stdlib.h> 
 #include <stdbool.h> 
 
-//Verificar se a string não é FIM. 
-bool isFim (char str[]) {
-    return (str[0] == 'F' && str[1] == 'I' && str[2] == 'M' && str[3] == '\0'); 
-}
-
 //Funcão recursiva. 
 int somaDigitos (int n) {
     //caso base. 
@@ -23,27 +18,16 @@ int somaDigitos (int n) {
 }
 
 int main() {
-    //Inicializar Variáveis. 
-    char str[100]; 
-    int n; 
-
-    //Ler a string. 
-    scanf (" %[^\n]", str);
+    //Inicializar Variável. 
+    int num; 
 
     //Loop. 
-    while (!isFim(str)) {
-        //Converter a string para inteiro. 
-        n = atoi(str); //atoi é uma função da biblioteca stdlib.h que converte uma string para um inteiro.
+    while (scanf("%d", &num) == 1) { //Enquanto conseguir ler um número inteiro, continua o loop. 
+        //Chamar a função. 
+        int resultado = somaDigitos(num); 
 
-        //Chamar a função recursiva 
-        int resultado = somaDigitos(n);
-
-        //Imprimir o resultado. 
-        printf("%d\n", resultado);  
-
-        //Ler a próxima string. 
-        scanf (" %[^\n]", str);
+        //Printar.
+        printf("%d\n", resultado);
     }
-
     return 0; 
 }
