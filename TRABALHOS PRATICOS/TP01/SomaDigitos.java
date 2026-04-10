@@ -14,21 +14,19 @@ class SomaDigitos {
 
     //Main. 
     public static void main (String[] args) {
-        //Inicializar uma variável como string para leitura e outra como inteiro para receber a conversão. 
-        int n; 
-        
+        //Scanner. 
         Scanner sc = new Scanner(System.in); 
 
         //Loop. 
         while (sc.hasNext()) {
+            //Ler o próximo número da entrada.
+            int n = sc.nextInt();
+
             //Chamar a soma dos dígitos, 
             int resultado = SomaDigitos(n); 
 
             //Imprimir resultado da soma. 
             System.out.println(resultado);
-
-            //Leitura da proxima string. 
-            n = sc.nextInt(); 
         }
 
         //Fechar scanner. 
