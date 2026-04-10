@@ -20,8 +20,8 @@ class AlteracaoAle {
         String alterada = ""; 
 
         //Gerar duas letras minúsculas aleatórias. 
-        char letra1 = (char) (rand.nextInt(26) + 'a'); //Gerar a primeira letra aleatória, usando o método nextInt da classe Random para gerar um número entre 0 e 25, e somando com o valor ASCII da letra 'a' para obter uma letra minúscula.
-        char letra2 = (char) (rand.nextInt(26) + 'a'); //Gerar a segunda letra aleatória da mesma forma.
+        char letra1 = (char)('a' + (Math.abs(rand.nextInt()) % 26)); //Gerar a primeira letra aleatória, usando o método nextInt da classe Random para gerar um número entre 0 e 25, e somando com o valor ASCII da letra 'a' para obter uma letra minúscula.
+        char letra2 = (char)('a' + (Math.abs(rand.nextInt()) % 26)); //Gerar a segunda letra aleatória da mesma forma.
 
         //Loop para percorrer cada caracter da string de entrada. 
         for (int i = 0; i < str.length(); i++) {
