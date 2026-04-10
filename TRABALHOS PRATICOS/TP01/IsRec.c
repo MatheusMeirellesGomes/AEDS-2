@@ -78,7 +78,7 @@ bool isReal (char str[], int i) {
 
 //Função Principal.
 int main() {
-    char str[100]; 
+    char str[1000]; 
 
     //Ler a primeira string. 
     scanf(" %[^\n]", str);
