@@ -26,7 +26,7 @@ void cifrada (char str[], int i) {
 //Main
 int main() {
     //Inicializar variável para a string.
-    char str[100]; 
+    char str[1000]; 
 
     //Ler a primeira string
     scanf(" %[^\n]", str);
