@@ -7,7 +7,7 @@
 import java.util.Scanner; 
 
 //Criar a classe Ciframento. 
-public class Ciframento{
+class Ciframento{
     //Criar primeiramente um método iterativo que receba uma string como parâmetro e retorne outra contendo a entrada de forma cifrada. 
     public static String ciframento (String str) {
         //Criar uma string vazia para armazenar a mensagem cifrada. 
