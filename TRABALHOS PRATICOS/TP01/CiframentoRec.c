@@ -17,19 +17,38 @@ void cifrada (char str[], int i) {
     }
     
     //Processar o caractere atual.
-    str[i] += 3; //Cifra o caractere atual, somando 3 ao seu valor ASCII.
+    str[i] = (char)(str[i] + 3); //Cifra o caractere atual, somando 3 ao seu valor ASCII.
 
     //Chamada recursiva para o próximo caractere.
     cifrada(str, i + 1); //Chama a função recursiva para o próximo caractere, incrementando o índice i.
 }
 
+//Remover o \n. 
+void removeEnter (char str[]) {
+    //Inicializar contador. 
+    int i = 0; 
+
+    //loop. 
+    while (str[i] != '\0' && str[i] != '\n') {
+        i++; //Enquanto nao tiver chegado no final da string ou no \n, incrementa o contador. 
+    }
+
+    //Substituir o \n 
+    if (str[i] == '\n') {
+        str[i] = '\0'; //Quando chegar no \n, trocar por \0. 
+    }
+}
+
 //Main
 int main() {
     //Inicializar variável para a string.
-    char str[1000]; 
+    char str[1300]; 
 
-    //Ler a primeira string
-    scanf(" %[^\n]", str);
+    //Ler a string. 
+    fgets(str, 1300, stdin);
+
+    //Remover \n
+    removeEnter(str); //Chamada da função. 
 
     //Loop
     while (!isFim(str)) {
@@ -40,7 +59,10 @@ int main() {
         printf("%s\n", str); 
 
         //Ler a próxima string.
-        scanf(" %[^\n]", str);
+        fgets(str, 1300, stdin);
+
+        //Remover \n
+        removeEnter(str); 
     }
 
     return 0; 
