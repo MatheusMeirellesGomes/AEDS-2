@@ -7,8 +7,8 @@
 
     import java.util.Scanner; 
 
-    //Procediimento para o tipo Data. 
-    class Data { //Criar a classe Data.
+    //Classe Data 
+    class Data { 
         //Inicializar atributos privados. 
         private int ano; 
         private int mes; 
@@ -84,8 +84,8 @@
         }
     }
 
-    //Procedimento para o tipo Hora.
-    class Hora { //Criar a classe Hora.
+    //Classe Hora
+    class Hora { 
         //Inicializar atributos privados.
         private int hora; 
         private int minuto; 
@@ -114,10 +114,11 @@
             if (hora >= 0 && hora <= 23) this.hora = hora; 
         }*/
 
-        /*Método para setar minuto. 
+        /* Setar minuto. 
         public void setMinuto (int minuto) {
             if (minuto >= 0 && minuto <= 59) this.minuto = minuto; 
-        }*/
+        }
+        */
 
         //Métodos getters.
         public int getHora() {
@@ -147,8 +148,8 @@
         }
     }
 
-    //Procedimento para o tipo Restaurante.
-    class Restaurante { //Criar a classe Restaurante.
+    //Classe Restaurante
+    class Restaurante { 
         //Inicializar os atributos privados. 
         private int id; 
         private String nome; 
@@ -226,14 +227,14 @@
             //Formatar os tipos de cozinha em uma string, separando por ';'.
             public String formatarTiposCozinha() { 
                 //String iniciando com '[' para formatar a saída. 
-                String resp = '['; 
+                String resp = "["; 
 
                 //Loop. 
                 for (int i = 0; i < tiposCozinha.length; i++) {
                     resp += tiposCozinha[i]; 
 
                     //Adicionar o delimitador. 
-                    if (i < tiposCozinha.length - 1) resp += ","; //Adicionar o ; e um espaço. 
+                    if (i < tiposCozinha.length - 1) resp += ", "; //Adicionar o ; e um espaço. 
                 }
 
                 //Fechar a formatação com ']'.
@@ -249,9 +250,23 @@
                 return str.length();
             }
 
+            //Método para formatar a faixa de preço. 
+            public String formatarFaixaPreco() {
+                //String vazia para armazenar a faixa de preco formatada. 
+                String formatada = ""; 
+
+                //Loop para adicionar o símbolo '$' de acordo com a faixa de preço.
+                for (int i = 0; i < faixaPreco; i++) {
+                    formatada += "$";
+                }
+
+                //Retornar a string formatada.
+                return formatada;
+            }
+
             //Get do atributo faixaPreco.
             public int getFaixaPreco() {
-                return parseFaixaPreco(this.faixaPreco);
+                return this.faixaPreco;
             }
 
             //Get do atributo horário, então vai ser um get para abertura e outro para o fechamento.
@@ -306,7 +321,7 @@
                         this.capacidade + " ## " +
                         this.avaliacao + " ## " +
                         formatarTiposCozinha() + " ## " +
-                        this.faixaPreco + " ## " +
+                        formatarFaixaPreco() + " ## " +
                         this.horarioAbertura.formatar() + "-" +
                         this.horarioFechamento.formatar() + " ## " +
                         this.dataAbertura.formatarData() + " ## " +
@@ -314,29 +329,92 @@
                         "]";
             }
     }
+
+    //Classe Colecao Restaurante. 
+    class ColecaoRestaurantes {
+        //Atributos. 
+        private Restaurante[] restaurantes; 
+        private int quantidade; //Quantidade de restaurantes na coleção. 
+
+        //Construtor. 
+        public ColecaoRestaurantes() {
+            this.restaurantes = new Restaurante[100]; //tamanho máximo da coleção. 
+            this.quantidade = 0; //até então a coleção está vazia.
+        }
+
+        //Método ler uma linha do arquivo. 
+        public void lerCsv (String path) {
+            //Tentar abrir o arquivo para leitura
+            try {
+                //Ler a linha do arquivo usando Scanner.
+                Scanner sc = new Scanner (new File(path)); 
+                
+                //Loop para ler cada linha do arquivo. 
+                while (sc.hasNextLine()) {
+                    //Ler a linha. 
+                    String linha = sc.nextLine(); 
+
+                    //Chamar o método parseRestaurante. 
+                    Restaurante restaurante = Restaurante.parseRestaurante(linha);
+
+                    //Adicionar o restaurante a coleção. 
+                    if (quantidade < restaurantes.length) {
+                        restaurantes[quantidade] = restaurante; 
+                        quantidade++;
+                    }
+                }
+
+                //Fechar o Scanner.
+                sc.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("Arquivo nao encontrado ou erro ao abrir o arquivo"); ; 
+            }
+        }
+
+    }
         
     //Classe Principal. 
-    public class Questao1 {
-        public static void main (String[] args) {
-            //Objeto Scanner. 
-            Scanner sc = new Scanner(System.in); 
+    public class Main {
+        public static void main(String[] args ) {
+            //Scanner. 
+            Scanner sc = new Scanner(System.in);
 
-            //Ler primeira linha. 
-            String linha = sc.nextLine();
+            //Criar a coleção de restaurantes.
+            ColecaoRestaurantes colecao = new ColecaoRestaurantes();
 
-            //Loop, até chegar em -1. 
-            while (!linha.equals("-1")) { 
-                //Chamada do método. 
-                Restaurante restaurante = Restaurante.parseRestaurante(linha); 
+            //Ler o arquivo Csv, chamando o método lerCsv. 
+            colecao.lerCsv("/tmp/restaurantes.csv");
 
-                //Imprimir com a formatação definida no método formatar da classe Restaurante.
-                System.out.println(restaurante.formatar()); 
+            //Ler a primeira linha de entrada
+            String linha = sc.nextLine(); 
 
-                //Ler a proxima linha. 
+            //Loop
+            while (!linha.equals("-1")) {
+                //Converter a linha para inteiro, para saber o id. 
+                int id = Integer.parseInt(linha); 
+
+                //Procurar o restaurante
+                Restaurante encontrado = null; //até que prove o contrário. 
+
+                //Loop. 
+                for (int i = 0; i < colecao.quantidade; i++) {
+                       //Verificar se o id do restaurante na coleção é igual ao id procurado.
+                       if (colecao.restaurantes[i].getId() == id) {
+                            encontrado = colecao.restaurantes[i]; 
+                       }
+                }
+
+                //Verificar se o restaurante foi encontrado.
+                if (encontrado != null) {
+                    //Imprimir os dados do restaurante, chamando formatar. 
+                    System.out.println(encontrado.formatar());
+                }
+
+                //Ler a próxima linha de entrada. 
                 linha = sc.nextLine();
             }
 
-            //Fechar Scanner 
-            sc.close(); 
+            //Fechar o Scanner.
+            sc.close();
         }
     }
