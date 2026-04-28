@@ -384,8 +384,8 @@ import java.util.Scanner;
             while (j >= 0 && array[j].getCidade().compareTo(tmp.getCidade()) > 0) {
                 comparacoes[0]++; //Comparação para verificar se o elemento é maior que tmp.
                 array[j + 1] = array[j]; 
-                j--; 
                 movimentacoes[0]++; //Movimentação para mover o elemento para a direita.
+                j--; 
             }
 
             //Verficar a última comparação que não atendeu a condição do while, para contar a comparação que falhou.
@@ -420,11 +420,15 @@ import java.util.Scanner;
     //Classe Principal. 
     public class Main {
         public static void main(String[] args ) {
-            //Scanner. 
+            //Scanner para leitura. 
             Scanner sc = new Scanner(System.in);
 
             //Criar a coleção de restaurantes.
             ColecaoRestaurantes colecao = new ColecaoRestaurantes();
+
+            //Criar o array para os restaurantes selecionados
+            Restaurante selecionados[] = new Restaurante[colecao.quantidade]; 
+            int n = 0; //Contador para qntd de restaurantes. 
 
             //Ler o arquivo Csv, chamando o método lerCsv. 
             colecao.lerCsv("/tmp/restaurantes.csv");
@@ -450,13 +454,32 @@ import java.util.Scanner;
 
                 //Verificar se o restaurante foi encontrado.
                 if (encontrado != null) {
-                    //Imprimir os dados do restaurante, chamando formatar. 
-                    System.out.println(encontrado.formatar());
+                   selecionados[n] = encontrado; //Adiciona o restaurante aos selecionados.
+                   n++; //Incrementa a qtnd
                 }
 
                 //Ler a próxima linha de entrada. 
                 linha = sc.nextLine();
             }
+
+            //Criar os arrays para contagem de comparações e movimentações.
+            int comparacoes[] = new int[1]; 
+            int movimentacoes[] = new int[1];
+
+            //Medir tempo inicial. 
+            long inicio = System.nanoTime(); //Nano time = tempo em nanosegundos. 
+
+            //Ordenar restaurantes chamando o insertion sort
+            insertionSort(selecionados, n, comparacoes, movimentacoes); 
+
+            //Tempo Final
+            long fim = System.nanoTime();
+
+            //Tempo Gasto total
+            double tempoGasto = (fim - inicio) / 1e9; //Converter para segundos
+
+            //Criar o arquivo de log. 
+            criarArqLog("minha_matricula", comparacoes[0], movimentacoes[0], tempoGasto);
 
             //Fechar o Scanner.
             sc.close();
