@@ -1,5 +1,6 @@
 /*Esse é um exercício de implementação de Lista Linear, um exercício básico de estrutra de dados, para a matéria de Lista de Aeds-2. 
-usando os métodos inserirInicio, inserirFim, inserir, mostrar(), removerInicio, RemoverFim, remover.*/ 
+usando os métodos inserirInicio, inserirFim, inserir, mostrar(), removerInicio, RemoverFim, remover.
+As listas possuem elementos para inserção e remoção, sendo no inicio, qualquer posição e fim*/ 
 
 #include <stdio.h> 
 #include <stdlib.h> 
