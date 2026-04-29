@@ -17,7 +17,7 @@ void inicializa (Pilha *pilha) {
 
 //Função para empilhar um elemento. (Colocar um elemento no topo da pilha: Push)
 void empilhar (Pilha *pilha, int elemento) {
-    //Verificar se ta cheia
+    //Verificar se ta vazia.
     if (pilha->topo < 5) {
         //Incrementa o topo e insere o elemento. 
         pilha->topo++; 
@@ -74,8 +74,8 @@ int main() {
     empilhar(&pilha, 20);
     empilhar(&pilha, 30);
     empilhar(&pilha, 40);
-    desempilhar(&pilha); 
-    desempilhar(&pilha); 
+    //desempilhar(&pilha); 
+    //desempilhar(&pilha); 
 
     //Pilha depois de empilhar e desempilhar alguns elementos.
     printf("Elementos da Pilha:\n");
