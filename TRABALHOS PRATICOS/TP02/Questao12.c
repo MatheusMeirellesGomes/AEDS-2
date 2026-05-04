@@ -2,11 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
-
-static const char* MATRICULA = "891378";
-static long long comparacoes = 0;
-static long long movimentacoes = 0;
 
 typedef struct { int ano; int mes; int dia; } Data;
 typedef struct { int hora; int minuto; } Hora;
@@ -184,67 +179,78 @@ Colecao_Restaurantes* ler_csv() {
     return c;
 }
 
-/* ---------- Quicksort (chave: avaliacao; empate: nome) ---------- */
+/* ---------- Pilha com Alocação Sequencial ---------- */
 
-static int comparar(Restaurante* a, Restaurante* b) {
-    comparacoes++;
-    if (a->avaliacao < b->avaliacao) return -1;
-    if (a->avaliacao > b->avaliacao) return 1;
-    comparacoes++;
-    return strcmp(a->nome, b->nome);
+typedef struct {
+    Restaurante** itens;
+    int topo;
+    int capacidade;
+} Pilha;
+
+Pilha* criar_pilha(int cap) {
+    Pilha* p = (Pilha*) malloc(sizeof(Pilha));
+    p->itens = (Restaurante**) malloc(cap * sizeof(Restaurante*));
+    p->topo = -1;
+    p->capacidade = cap;
+    return p;
 }
 
-static void trocar(Restaurante** arr, int i, int j) {
-    Restaurante* tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-    movimentacoes += 3;
+void empilhar(Pilha* p, Restaurante* r) {
+    p->itens[++p->topo] = r;
 }
 
-static int particionar(Restaurante** arr, int esq, int dir) {
-    Restaurante* pivo = arr[dir];
-    int i = esq - 1;
-    for (int j = esq; j < dir; j++) {
-        if (comparar(arr[j], pivo) <= 0) {
-            i++;
-            trocar(arr, i, j);
-        }
-    }
-    trocar(arr, i + 1, dir);
-    return i + 1;
+Restaurante* desempilhar(Pilha* p) {
+    if (p->topo < 0) return NULL;
+    return p->itens[p->topo--];
 }
 
-static void quicksort(Restaurante** arr, int esq, int dir) {
-    if (esq >= dir) return;
-    int p = particionar(arr, esq, dir);
-    quicksort(arr, esq, p - 1);
-    quicksort(arr, p + 1, dir);
+static Restaurante* buscar_por_id(Colecao_Restaurantes* c, int id) {
+    for (int i = 0; i < c->tamanho; i++)
+        if (c->restaurantes[i]->id == id) return c->restaurantes[i];
+    return NULL;
 }
 
 int main() {
     Colecao_Restaurantes* colecao = ler_csv();
+    Pilha* pilha = criar_pilha(4000);
 
-    Restaurante* arr[2000];
-    int n = 0;
+    /* primeira parte: ids terminados por -1 */
     int id;
     while (scanf("%d", &id) == 1 && id != -1) {
-        for (int i = 0; i < colecao->tamanho; i++) {
-            if (colecao->restaurantes[i]->id == id) { arr[n++] = colecao->restaurantes[i]; break; }
+        Restaurante* r = buscar_por_id(colecao, id);
+        if (r) empilhar(pilha, r);
+    }
+
+    /* segunda parte: n comandos */
+    int n;
+    scanf("%d", &n);
+    { int c; while ((c = getchar()) != '\n' && c != EOF); }
+
+    char linha[512];
+    for (int k = 0; k < n; k++) {
+        fgets(linha, sizeof(linha), stdin);
+        /* remover \n */
+        int len = 0;
+        while (linha[len] && linha[len] != '\n' && linha[len] != '\r') len++;
+        linha[len] = '\0';
+
+        if (linha[0] == 'I') {
+            /* I id */
+            int rid = parse_int(linha + 2);
+            Restaurante* r = buscar_por_id(colecao, rid);
+            if (r) empilhar(pilha, r);
+        } else if (linha[0] == 'R') {
+            Restaurante* r = desempilhar(pilha);
+            if (r) printf("(R)%s\n", r->nome);
         }
     }
 
-    clock_t inicio = clock();
-    quicksort(arr, 0, n - 1);
-    clock_t fim = clock();
-    double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC * 1000.0;
-
+    /* imprimir do topo para a base */
     char buffer[2048];
-    for (int i = 0; i < n; i++) {
-        formatar_restaurante(arr[i], buffer);
+    for (int i = pilha->topo; i >= 0; i--) {
+        formatar_restaurante(pilha->itens[i], buffer);
         printf("%s\n", buffer);
     }
-
-    FILE* log = fopen("891378_quicksort.txt", "w");
-    fprintf(log, "%s\t%lld\t%lld\t%.2f\n", MATRICULA, comparacoes, movimentacoes, tempo);
-    fclose(log);
 
     return 0;
 }

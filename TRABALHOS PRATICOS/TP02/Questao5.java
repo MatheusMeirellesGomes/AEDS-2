@@ -1,5 +1,4 @@
-/*Questão de Pesquisa Sequencial em Java. */
-import java.util.Scanner;
+/*Questão de Pesquisa Sequencial em Java. */import java.util.Scanner;
 import java.io.*;
 
 //Classe Data

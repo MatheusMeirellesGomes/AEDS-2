@@ -1,15 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class Questao7 {
-
-    private static final String MATRICULA = "891378";
-    private static long comparacoes = 0;
-    private static long movimentacoes = 0;
+public class Questao13 {
 
     static class Data {
         private int ano, mes, dia;
@@ -202,61 +196,111 @@ public class Questao7 {
         }
     }
 
-    /* ---------- Mergesort (chave: cidade; empate: nome) ---------- */
+    /* ---------- Fila Circular com Alocação Sequencial (tamanho 5) ---------- */
 
-    static int comparar(Restaurante a, Restaurante b) {
-        comparacoes++;
-        int cmp = a.getCidade().compareTo(b.getCidade());
-        if (cmp != 0) return cmp;
-        comparacoes++;
-        return a.getNome().compareTo(b.getNome());
-    }
+    static class FilaCircular {
+        private static final int CAPACIDADE = 5;
+        private Restaurante[] itens = new Restaurante[CAPACIDADE];
+        private int inicio = 0;
+        private int fim = 0;
+        private int tamanho = 0;
 
-    static void merge(Restaurante[] arr, Restaurante[] aux, int esq, int meio, int dir) {
-        for (int k = esq; k <= dir; k++) { aux[k] = arr[k]; movimentacoes++; }
-        int i = esq, j = meio + 1;
-        for (int k = esq; k <= dir; k++) {
-            if (i > meio) { arr[k] = aux[j++]; movimentacoes++; }
-            else if (j > dir) { arr[k] = aux[i++]; movimentacoes++; }
-            else if (comparar(aux[i], aux[j]) <= 0) { arr[k] = aux[i++]; movimentacoes++; }
-            else { arr[k] = aux[j++]; movimentacoes++; }
+        public boolean cheia() { return tamanho == CAPACIDADE; }
+        public boolean vazia() { return tamanho == 0; }
+        public int getTamanho() { return tamanho; }
+
+        public Restaurante desenfileirar() {
+            Restaurante r = itens[inicio];
+            inicio = (inicio + 1) % CAPACIDADE;
+            tamanho--;
+            return r;
+        }
+
+        public void enfileirar(Restaurante r) {
+            itens[fim] = r;
+            fim = (fim + 1) % CAPACIDADE;
+            tamanho++;
+        }
+
+        public Restaurante getItem(int i) {
+            return itens[(inicio + i) % CAPACIDADE];
+        }
+
+        public int mediaAnoArredondada() {
+            long soma = 0;
+            for (int i = 0; i < tamanho; i++)
+                soma += getItem(i).getDataAbertura().getAno();
+            /* arredondamento: (soma + tamanho/2) / tamanho */
+            return (int) Math.round((double) soma / tamanho);
         }
     }
 
-    static void mergesort(Restaurante[] arr, Restaurante[] aux, int esq, int dir) {
-        if (esq >= dir) return;
-        int meio = (esq + dir) / 2;
-        mergesort(arr, aux, esq, meio);
-        mergesort(arr, aux, meio + 1, dir);
-        merge(arr, aux, esq, meio, dir);
+    private static int lerInt(String s) {
+        int r = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c >= '0' && c <= '9') r = r * 10 + (c - '0');
+        }
+        return r;
     }
 
-    public static void main(String[] args) throws IOException {
+    private static Restaurante buscarPorId(Restaurante[] todos, int tamanho, int id) {
+        for (int i = 0; i < tamanho; i++)
+            if (todos[i].getId() == id) return todos[i];
+        return null;
+    }
+
+    public static void main(String[] args) {
         ColecaoRestaurantes colecao = ColecaoRestaurantes.lerCsv();
         Restaurante[] todos = colecao.getRestaurantes();
         int tamanho = colecao.getTamanho();
 
-        Restaurante[] arr = new Restaurante[tamanho];
-        int n = 0;
+        FilaCircular fila = new FilaCircular();
+
+        /* primeira parte: ids terminados por -1, enfileirar */
         Scanner sc = new Scanner(System.in);
         while (sc.hasNextInt()) {
             int id = sc.nextInt();
             if (id == -1) break;
-            for (int i = 0; i < tamanho; i++) {
-                if (todos[i].getId() == id) { arr[n++] = todos[i]; break; }
+            Restaurante r = buscarPorId(todos, tamanho, id);
+            if (r != null) {
+                if (fila.cheia()) {
+                    Restaurante removido = fila.desenfileirar();
+                    System.out.println("(R)" + removido.getNome());
+                }
+                fila.enfileirar(r);
+                System.out.println("(I)" + fila.mediaAnoArredondada());
+            }
+        }
+
+        /* segunda parte: n comandos */
+        int n = sc.nextInt();
+        sc.nextLine();
+        for (int k = 0; k < n; k++) {
+            String linha = sc.nextLine();
+            char cmd = linha.charAt(0);
+            if (cmd == 'I') {
+                /* I id */
+                int id = lerInt(linha.length() > 2 ? linha.substring(2) : "0");
+                Restaurante r = buscarPorId(todos, tamanho, id);
+                if (r != null) {
+                    if (fila.cheia()) {
+                        Restaurante removido = fila.desenfileirar();
+                        System.out.println("(R)" + removido.getNome());
+                    }
+                    fila.enfileirar(r);
+                    System.out.println("(I)" + fila.mediaAnoArredondada());
+                }
+            } else if (cmd == 'R') {
+                if (!fila.vazia()) {
+                    Restaurante removido = fila.desenfileirar();
+                    System.out.println("(R)" + removido.getNome());
+                }
             }
         }
         sc.close();
 
-        Restaurante[] aux = new Restaurante[n];
-        long t0 = System.nanoTime();
-        mergesort(arr, aux, 0, n - 1);
-        long t1 = System.nanoTime();
-
-        for (int i = 0; i < n; i++) System.out.println(arr[i].formatar());
-
-        PrintWriter pw = new PrintWriter(new FileWriter(MATRICULA + "_mergesort.txt"));
-        pw.println(MATRICULA + "\t" + comparacoes + "\t" + movimentacoes + "\t" + (t1 - t0));
-        pw.close();
+        for (int i = 0; i < fila.getTamanho(); i++)
+            System.out.println(fila.getItem(i).formatar());
     }
 }
