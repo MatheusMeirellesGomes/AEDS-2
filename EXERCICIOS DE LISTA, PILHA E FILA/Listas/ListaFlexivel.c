@@ -100,25 +100,25 @@ InserirFim(20) => [inicio] -> [10 | NULL] -> [20 | NULL] -> [fim].
 
 //Remover do início da lista.
 int removerInicio (Lista *lista) {
-    //Inicializar variável. 
+    //Variável para armazenar o elemento removido. 
     int elementoRemovido; 
 
-    //Se a lista não estiver vazia, ou seja, se tiver algum elemento apontado pelo início da lista. 
+    //Se o início da lista tiver algum elemento. 
     if (lista->inicio != NULL) {
-        elementoRemovido = lista->inicio->elemento; //o elemento removido vai ser o elemento do início da lista. 
+        elementoRemovido = lista->inicio->elemento; //Esse elemento vai ser removido. 
 
-        //Necessário criar uma célula auxiliar armazenar o elemento que será removido. 
+        //Criar célula auxiliar para armazenar o início da lista. 
         Celula *aux = lista->inicio; 
         
-        //Como foi o removido o antigo início da lista. O próximo elemento que o antigo da lista apontava, passa a ser o novo início da lista.
+        //O início agora é o próximo elemento que o antigo início apontava, ou seja, o próximo elemento da lista.
         lista->inicio = lista->inicio->prox; 
 
-        //Liberar a memória da célula removida.
+        //Vou liberar a memória com a célula auxiliar, que tem o antigo início da lista. 
         free(aux);
 
         //Se após a remoção a lista ficou vazia.
         if (lista->inicio == NULL) {
-            lista->fim = NULL; //O fim da lista também é atualizado para NULL. Concluindo que a lista está vazia. 
+            lista->fim = NULL; //O fim da lista também vai ser NULL. 
         }
     }
     
@@ -128,31 +128,31 @@ int removerInicio (Lista *lista) {
 
 //Remover do fim da lista.
 int removerFim (Lista *lista) {
-    int elementoRemovido; //Inicializar variável.
+    int elementoRemovido; //Guardar o elemento removido. 
 
-    //Ver se ta vazia
+    //Se a lista não estiver vazia. 
     if (lista->inicio != NULL) {
-        //Guardar
-        elementoRemovido = lista->fim->elemento; 
+        elementoRemovido = lista->fim->elemento; //O elemento a ser removido é o elemento do fim da lista.
 
-        //Criar célula auxiliar para percorrer a lista.
+        //Criar célula auxiliar para guardar o início da lista. inicio [elemento | prox] -> ... -> [elemento | NULL] <- fim.
         Celula *aux = lista->inicio; 
 
-        //Percorrer a lista até chegar na penúltima célula (antes do fim).
+        //Percorrer até o penúltimo elemento da lista, o que aponta para o fim da lista.
         while (aux->prox != lista->fim) {
             aux = aux->prox; //Avançar para a próxima célula.
         }
 
-        //Atualizar o fim da lista para a célula auxiliar (penúltima).
-        lista->fim = aux;
-        lista->fim->prox = NULL; //O próximo do novo fim é NULL, pois é o último elemento.
+        //Criar célula auxiliar para guardar o fim da lista, que é o elemento a ser removido.
+        Celula *tmp = lista->fim; 
+        lista->fim = aux; //O novo fim da lista, passa a ser a célula auxiliar, que é o penúltimo elemento da lista.
+        lista->fim->prox = NULL; //O próximo do novo fim da lista é NULL. 
 
-        //Liberar a memória da célula removida.
-        free(aux);
+        //Liberar a memória da célula com o elemento removido, que é o antigo fim da lista.
+        free(tmp);
     }
 
     //Retornar o elemento removido.
-    return elementoRemovido;
+    return elementoRemovido;    
 }
 
 //Mostrar os elementos da lista. (Mostrar)
