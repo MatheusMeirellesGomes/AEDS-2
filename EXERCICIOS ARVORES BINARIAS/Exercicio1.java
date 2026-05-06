@@ -1,4 +1,4 @@
-/*Primeiro exercício de arvore binária em java. 
+/*Primeiro exercício de arvore binária em java. Este primeiro exercício é apenas para inserir elementos na árvore. 
 - X: insere o número X;
 
 - Pesquisar Y: pesquisa se o número Y está na árvore, imprimindo S caso verdadeiro e N caso contrário. O algoritmo de pesquisa deve imprimir cada nó visitado;

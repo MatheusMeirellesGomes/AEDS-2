@@ -29,7 +29,7 @@ public class ListaFlexivel {
 
         //Inserir. 
         novo.elemento = x; 
-        novo.prox = inicio; //O próximo do novo, é o início da lista. 
+        novo.prox = inicio; //O novo elemento agora aponta para o antigo início da lista.       
         inicio = novo; //O inicio da lista agora é o novo elemento. 
 
         //Se a lista estava vazia, o fim também deve apontar para o novo elemento. 
@@ -39,14 +39,34 @@ public class ListaFlexivel {
     }
 
     //Método para inserir em qualquer posição 
-    public void inserir (int x, int pos) {
+    public void inserirPos (int x, int pos) {
         //Verificar se a posição é zero. 
         if (pos == 0) {
             inserirInicio(x); 
+        } else {
+            //Criar nova célula. 
+            Celula novo = new Celula(); 
+            novo.elemento = x; //atribuição. 
+
+            //Criar varíavel auxiliar para percorrer a lista
+            Celula aux = inicio; 
+
+            //Percorrer a lista até a posição desejada ou até o fim da lista.
+            for (int i = 0; i < pos - 1 && aux != null; i++) {
+                aux = aux.prox; //Avançar para o próximo elemento. 
+            }
+
+            //Se aux (posição anterior) for diferente de null, ou seja, a posição é válida.
+            if (aux != null) {
+                novo.prox = aux.prox; //O próximo do novo elemento é o próximo do elemento anterior. 
+                aux.prox = novo; //O próximo do elemento anterior agora é o novo elemento. 
+
+                //Se o novo elemento for inserido no final da lista, atualizar o fim da lista.
+                if (novo.prox == null) {
+                    fim = novo; 
+                }
+            }
         }
-
-
-
     }
 
     //Método para inserir no fim da lista. 
@@ -89,6 +109,39 @@ public class ListaFlexivel {
         }
 
         //Retornar o elemento removido.
+        return elementoRemovido;
+    }
+
+    //Método para remover de uma posição específica da lista.
+    public int removerPos (int pos) {
+        int elementoRemovido = 0; //Guardar elemento. 
+
+        //Se a posição informada for igual a zero
+        if (pos == 0) {
+            elementoRemovido = removerInicio(); //o elemento removido vai ser o elemento inicial da lista.
+        } else {
+            //Criar variável auxiliar 
+            Celula aux = inicio; 
+
+            //Percorrer a lista até a posição desejada ou até o fim da lista.
+            for (int i = 0; i < pos - 1 && aux != null; i++) {
+                aux = aux.prox; //Avançar para o próximo elemento.
+            }
+
+            //Se aux (posição anterior) for diferente de null e o próximo de aux (elemento a ser removido) for diferente de null, ou seja, a posição é válida.
+            if (aux != null && aux.prox != null) {
+                //Criar célula auxiliar
+                Celula tmp = aux.prox; 
+                elementoRemovido = tmp.elemento; //O elemento removido é o elemento da posição desejada.
+                
+                aux.prox = tmp.prox; //O próximo do elemento anterior agora aponta para o próximo do elemento a ser removido, cortando a ligação com o elemento removido.
+                
+                //Se o elemento removido for o último elemento da lista, atualizar o fim da lista.
+                if (tmp == fim) {
+                    fim = aux; //O novo fim da lista é o elemento anterior.
+                }
+            }
+        }
         return elementoRemovido;
     }
 
