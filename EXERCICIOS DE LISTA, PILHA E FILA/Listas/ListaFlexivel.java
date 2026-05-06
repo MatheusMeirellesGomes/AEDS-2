@@ -38,6 +38,17 @@ public class ListaFlexivel {
         }
     }
 
+    //Método para inserir em qualquer posição 
+    public void inserir (int x, int pos) {
+        //Verificar se a posição é zero. 
+        if (pos == 0) {
+            inserirInicio(x); 
+        }
+
+
+
+    }
+
     //Método para inserir no fim da lista. 
     public void inserirFim (int x) {
         //Criar nova célula.

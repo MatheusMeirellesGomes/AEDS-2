@@ -65,6 +65,49 @@ Ex: Antes do inserirInicio => [inicio] -> NULL e [fim] -> NULL. Depois do inseri
 Se for chamado novamente o inserirInicio(20) => [inicio] -> [20] -> [10] -> NULL. => Início passa a ser 20 e o fim permanece 10. 
 */
 
+//Inserir elemento em uma posição específica da lista.
+void inserirPos (Lista *lista, int x, int pos) {
+    //Se posição for 0, chamar método de inserir no início da lista.
+    if (pos == 0) {
+        inserirInicio(lista, x); //Passando a lista e o elemento a ser inserido.
+    } else {
+        //Criar nova célula.
+        Celula *novo = (Celula *)malloc(sizeof(Celula));
+        novo->elemento = x; //atribuição do elemento.
+
+        //Criar célula auxiliar para percorrer a lista.
+        Celula *aux = lista->inicio; 
+
+        //Percorrer a lista até a posição desejada ou até o final da lista.
+        for (int i = 0; i < pos - 1 && aux != NULL; i++) {
+            aux = aux->prox; //Avançar para a próxima célula.
+        }
+
+        //Verificar se chegou na posição desejada e não chegou ao final da lista.
+        if (aux != NULL) {
+            //Inserir o novo elemento na posição desejada. 
+            novo->prox = aux->prox; //O próximo do novo elemento aponta para o próximo da célula auxiliar.
+            aux->prox = novo; //O próximo da célula auxiliar aponta para o novo elemento
+        
+            //Se a célula auxiliar for igual ao fim da lista
+            if (aux == lista->fim) {
+            lista->fim = novo; //O novo elemento passa a ser o fim da lista.
+            }
+        } else {
+            printf("Posição inválida\n"); 
+            free(novo); 
+        }
+    }
+}
+
+/*Quando o inserir na posição é chamado, um novo elemento é criado: novo->[elemento | prox] -> NULL
+Cria-se uma célula auxiliar para percorrer a lista, com o elemento inicial apontando para o início da lista.
+Percorre-se a lista até a posição desejada ou até o final da lista, avançando a célula auxiliar para a próxima célula.
+Se a célula auxiliar não for NULL, ou seja, se chegou na posição desejada, o próximo do novo elemento aponta para o próximo da célula
+auxiliar, e o próximo da célula auxiliar aponta para o novo elemento, inserindo o novo elemento na posição desejada.
+Se a célula auxiliar for igual ao fim da lista, ou seja, se a posição desejada for o final da lista, o novo elemento passa a ser o fim da lista.
+*/
+
 //Inserir no fim da lista. 
 void inserirFim (Lista *lista, int x) {
     //Nova célula. 
@@ -101,7 +144,7 @@ InserirFim(20) => [inicio] -> [10 | NULL] -> [20 | NULL] -> [fim].
 //Remover do início da lista.
 int removerInicio (Lista *lista) {
     //Variável para armazenar o elemento removido. 
-    int elementoRemovido; 
+    int elementoRemovido = 0; 
 
     //Se o início da lista tiver algum elemento. 
     if (lista->inicio != NULL) {
@@ -122,6 +165,48 @@ int removerInicio (Lista *lista) {
         }
     }
     
+    //Retornar o elemento removido.
+    return elementoRemovido;
+}
+
+//Remover de uma posição específica da lista.
+int removerPos (Lista *lista, int pos) {
+    //Variável para armazenar o elemento removido.
+    int elementoRemovido = 0;
+    
+    //Se a posição for 0, chamar o método de remover do início da lista.
+    if (pos == 0) {
+        return removerInicio(lista); 
+    } else {
+        //Criar célula auxiliar para percorrer a lista.
+        Celula *aux = lista->inicio;
+
+        //Percorrer a lista até a posição desejada ou até o final da lista.
+        for (int i = 0; i < pos - 1 && aux != NULL; i++) {
+            aux = aux->prox; //Avançar para a próxima célula.
+        }
+
+        //Se a célula auxiliar não for NULL e o próximo da célula auxiliar também não for NULL, ou seja, se chegou na posição desejada e não chegou ao final da lista.
+        if (aux != NULL && aux->prox != NULL) {
+            //Criar célula auxiliar para armazenar a célula a ser removida, que é o próximo da célula auxiliar.
+            Celula *tmp = aux->prox;
+            int elementoRemovido = tmp->elemento; //O elemento a ser removido é o elemento da célula a ser removida.
+
+            //O próximo da célula auxiliar passa a apontar para o próximo da célula a ser removida, ou seja, o próximo do próximo da célula auxiliar.
+            aux->prox = tmp->prox;
+
+            //Se a célula a ser removida for o fim da lista, ou seja, se o próximo da célula a ser removida for NULL, o novo fim da lista passa a ser a célula auxiliar.
+            if (tmp->prox == NULL) {
+                lista->fim = aux; 
+            }
+
+            //Liberar a memória da célula a ser removida.
+            free(tmp);
+        } else {
+            printf("Posição inválida ou lista vazia!\n"); 
+        }
+    }
+
     //Retornar o elemento removido.
     return elementoRemovido;
 }
@@ -173,12 +258,15 @@ int main() {
     inicializa(&lista); 
 
     //Inserir elementos
-    inserirInicio(&lista, 10);
     inserirInicio(&lista, 20);
+    inserirInicio(&lista, 10);
     inserirFim(&lista, 30);
     inserirInicio(&lista, 5);
     inserirFim(&lista, 40);
     inserirFim(&lista, 50);
+    inserirPos(&lista, 25, 3); 
+    inserirPos(&lista, 15, 2);
+
     
     //Mostrar elementos depois de inserir
     printf("Elementos da Lista:\n");
@@ -187,6 +275,8 @@ int main() {
     //Remover elementos. 
     removerInicio(&lista);
     removerFim(&lista);
+    removerPos(&lista, 2);
+    removerPos(&lista, 0);
 
     //Mostrar elementos completos após as remoções.
     printf("Elementos da Lista após remoções:\n");
