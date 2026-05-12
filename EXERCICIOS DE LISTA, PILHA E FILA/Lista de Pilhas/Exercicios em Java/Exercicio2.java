@@ -30,8 +30,8 @@ CelulaLista menorPilha() {
         menorQntd++; //Incrementar o contador. 
     }
 
-    //Percorrer primeiramente a lista
-    for (CelulaLista i = inicio; i != null; i = i.prox) {
+    //Percorrer primeiramente a lista, a partir da segunda pilha, já que a primeira já foi verificada
+    for (CelulaLista i = inicio.prox; i != null; i = i.prox) {
         //Variável para contar a quantidade atual de elementos de cada pilha. 
         int qntdAtual = 0; 
         

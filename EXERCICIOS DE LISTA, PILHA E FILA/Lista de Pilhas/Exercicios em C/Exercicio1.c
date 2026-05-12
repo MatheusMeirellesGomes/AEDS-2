@@ -27,7 +27,7 @@ typedef struct CelulaPilha {
 } CelulaPilha;
 
 //Função para criar a CelulaLista maiorPilha()
-CelulaLista maiorPilha(Lista *lista) {
+CelulaLista *maiorPilha(Lista *lista) {
     //Criar variáveis para armazenar a maior pilha e o número de elementos. 
     CelulaLista *maior = NULL; 
     int maiorQntd = 0; 
@@ -50,5 +50,5 @@ CelulaLista maiorPilha(Lista *lista) {
         }
     }
 
-    return *maior; 
+    return maior; 
 }
