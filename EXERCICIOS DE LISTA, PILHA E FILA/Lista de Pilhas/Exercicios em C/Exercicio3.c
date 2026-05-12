@@ -16,7 +16,7 @@ typedef struct CelulaLista {
 typedef struct CelulaPilha {
     int elemento; 
     CelulaLista *prox; 
-}
+} CelulaPilha; 
 
 //Função que retorna um inteiro
 int somaMaiorPilha (Lista *lista) {
