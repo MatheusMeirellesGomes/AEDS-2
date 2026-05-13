@@ -151,11 +151,14 @@ public class ListaDupla {
     public int removerFim() {
         int elementoRemovido = 0; //Variável para remover o elemento removido. 
 
+        //Se tiver elementos na lista
         if (fim != null) {
             elementoRemovido = fim.elemento; //Elemento removido é o último elemento.
 
             //Atribuir ponteiros.
             fim = fim.ant; //O fim agora é o anterior do antigo fim.
+
+            //Se o novo fim não for null, o próximo do novo fim aponta para null.
             if (fim != null) {
                 fim.prox = null; //O próximo do novo fim aponta para null.
             } else {
