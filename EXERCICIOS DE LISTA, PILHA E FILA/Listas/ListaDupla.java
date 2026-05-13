@@ -62,6 +62,11 @@ public class ListaDupla {
                 novo.prox = aux.prox; //O próximo do novo aponta pro próximo do aux. 
                 novo.ant = aux; //O anterior do novo aponta pro aux. 
                 aux.prox = novo; //O novo elemento é o próximo do aux. 
+
+                //Se o próximo do novo elemento não for null, o anterior do próximo do novo elemento aponta pro novo elemento.
+                if (novo.prox != null) {
+                    novo.prox.ant = novo;
+                }
             }
 
             //Se o novo elemento inserido for na última pos (fim da lista)
@@ -192,7 +197,7 @@ public class ListaDupla {
         //Remover alguns elementos. 
         lista.removerInicio(); 
         lista.removerFim(); 
-        lista.removerPos(4); 
+        lista.removerPos(3); 
 
         //Imprimir a lista após remoções
         lista.mostrar(); 
