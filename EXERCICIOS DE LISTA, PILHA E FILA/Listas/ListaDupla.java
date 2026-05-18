@@ -28,12 +28,14 @@ public class ListaDupla {
         //Atribuir
         novo.elemento = x; 
 
+        //Se a lista estiver com algum elemento
         if (inicio != null) {
-            //Inserir
+            //Inserir e posicionar o ponteiro
             novo.prox = inicio; //Novo elemento aponta pro antigo início.
             inicio.ant = novo; //Anterior do antigo início aponta pro novo. 
             inicio = novo; //Inicio agora é o novo elemento. 
-        } else {
+        } else { //Se ela estiver vazia. 
+            //Tanto o inicio quanto o fim apontam pro novo elemento. 
             inicio = novo;
             fim = novo;
         }
@@ -63,8 +65,9 @@ public class ListaDupla {
                 novo.ant = aux; //O anterior do novo aponta pro aux. 
                 aux.prox = novo; //O novo elemento é o próximo do aux. 
 
-                //Se o próximo do novo elemento não for null, o anterior do próximo do novo elemento aponta pro novo elemento.
+                //Se o próximo do novo elemento não for null
                 if (novo.prox != null) {
+                    //O anterior do próximo aponta para o novo elemento. 
                     novo.prox.ant = novo;
                 }
             }
