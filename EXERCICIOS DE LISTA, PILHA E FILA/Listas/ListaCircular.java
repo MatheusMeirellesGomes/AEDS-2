@@ -37,11 +37,13 @@ class ListaCircular {
             novo.prox = inicio; 
         } else { //Caso já tenha elemento na lista
             //Ligações
-            novo.prox = inicio; //O próximo do novo, aponta pro antigo início. 
-            inicio.ant = novo; //O anterior do antigo inicio aponta pro novo elemento
-            novo.ant = fim; //O anterior do novo elemento aponta pro fim
-            fim.prox = novo; //O próximo do fim aponta pro novo elemento.
-            inicio = novo; //Inicio agora é o novo elemento. 
+            novo.prox = inicio; //O próximo do novo aponta pro antigo início
+            novo.ant = fim; //O anterior do novo aponta pro fim da lista
+
+            inicio.ant = novo; //O anterior do antigo inicio aponta para o novo elemento. 
+            fim.prox = novo; //O próximo do fim aponta para o novo elemento. 
+
+            inicio = novo; //O novo elemento é o início da lista. 
         }
     }
 
@@ -66,11 +68,12 @@ class ListaCircular {
             aux.prox.ant = novo; 
             novo.ant = aux; 
             aux.prox = novo; 
-        }
 
-        //Se o elemento for inserido no final da lista
-        if (novo.prox == inicio) {
-            fim = novo;
+            //Se o elemento for inserido no final da lista
+            if (novo.prox == inicio) {
+                fim = novo;
+                inicio.ant = fim; 
+            }
         }
     }
 
@@ -167,7 +170,7 @@ class ListaCircular {
             if (inicio == fim) {
                 //Ele será removido, e a lista aponta pra null.
                 inicio = null;
-                fim == null; 
+                fim = null; 
             } else {            
                 fim = fim.ant; 
                 fim.prox = inicio; 
@@ -178,7 +181,43 @@ class ListaCircular {
         return elementoRemovido; 
     }
 
+    //Método para mostrar a lista imprimida
+    public void mostrar() {
+        //Verificar se a lista não está vazia
+        if (inicio != null) {
+            //Criar célula auxiliar
+            Celula i = inicio;
+
+            //Percorrer a lista circular
+            do {
+                //Imprimir e avançar para a próxima string. 
+                System.out.print(i.elemento + " ");
+                i = i.prox;
+            } while (i != inicio); //Enquanto for diferente de inicio, ou seja, que der a volta na lista por completo
+
+            System.out.println();
+        }
+    }
+
+    //Main
     public static void main(String args[]) {
-        
+        //Criando array para lista
+        ListaCircular lista = new ListaCircular(); 
+
+        //Inserir alguns elementos.
+        lista.inserirInicio(10); 
+        lista.inserirInicio(5); 
+        lista.inserirFim(20); 
+        lista.inserirPos(15, 2); 
+        lista.inserirFim(30); 
+        lista.inserirPos(25, 4); 
+
+        //Remover alguns elementos. 
+        lista.removerInicio(); 
+        lista.removerFim(); 
+        lista.removerPos(3); 
+
+        //Imprimir a lista após remoções
+        lista.mostrar(); 
     }
 }
