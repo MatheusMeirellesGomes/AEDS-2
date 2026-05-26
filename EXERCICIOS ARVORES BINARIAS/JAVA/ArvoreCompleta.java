@@ -1,186 +1,171 @@
-/*Primeiro exercício de arvore binária em java. Este primeiro exercício é apenas para inserir elementos na árvore. 
-- X: insere o número X;
+/*Para finalizar o módulo de árvore simples, estrutura completa da árvore binária de busca */
 
-- Pesquisar Y: pesquisa se o número Y está na árvore, imprimindo S caso verdadeiro e N caso contrário. O algoritmo de pesquisa deve imprimir cada nó visitado;
-
-- PRE: imprime os elementos da árvore por caminhamento pré-ordem ou V se a árvore estiver vazia; Pré-ordem começa imprimindo a raiz
-depois os elementos a esquerda e depois os elementos a direita.
-
-- POS: imprime os elementos da árvore por caminhamento pós-ordem ou V se a árvore estiver vazia;
-Pós-ordem começa imprimindo os elementos a esquerda, depois os elementos a direita e por último a raiz.
-
-- EM: imprime os elementos da árvore por caminhamento em-ordem ou V se a árvore estiver vazia; 
-Em-ordem começa imprimindo os elementos a esquerda, depois a raiz e por último os elementos a direita.
-*/
-
-import java.util.Scanner; 
-
-//Classe para representar um nó da árvore
+//Classe para cada nó 
 class No {
     //Atributos
     int elemento; 
-    No esq, dir; 
+    No esq; 
+    No dir; 
 
     //Construtor
-    public No (int elemento) {
-        //Inicializar os atributos
-        this.elemento = elemento; 
+    public No (int x) {
+        //Atribuir
+        this.elemento = x; 
         this.esq = null; 
-        this.dir = null; //Tanto esquerda quanto direita apontam para null. 
+        this.dir = null; 
     }
 }
 
-//Classe para representar a árvore binária
-class ArvoreBinaria {
+//Classe para árvore
+class Arvore {
     //Atributo
-    No raiz; //Indicar a raiz da árvore. 
+    No raiz; 
 
     //Construtor
-    public ArvoreBinaria() {
-        //Inicializar a árvore como vazia
+    public Arvore() {
         this.raiz = null; 
     }
 
-    //Método public que vai chamar o método private. 
-    public void inserir (int x) {
-        //Inserir o elemento na raiz da árvore
+    //Método public e private Inserir
+    public void inserir(int x) {
+        //Chamar private
         raiz = inserir(raiz, x); 
     }
 
-    //Método private para inserir um elemento a partir de um nó
     private No inserir (No i, int x) {
-        //Verificar se o nó aponta para null 
+        //Se estiver vaziza
         if (i == null) {
-            i = new No(x); //Criar um novo nó com o elemento x.
-        } else if (x < i.elemento) { //Se o elemento x for menor que o elemento do nó i, inserir na esquerda. 
-            i.esq = inserir(i.esq, x);
+            i = new No(x); //Criar nova raiz
+        } else if (x < i.elemento) { 
+            i.esq = inserir(i.esq, x); //Inserir na esquerda, se x for menor que a raiz. 
         } else if (x > i.elemento) {
-            i.dir = inserir(i.dir, x); //Se o elemento x for maior que o elemento do nó i, inserir na direita.
+            i.dir = inserir(i.dir, x); //Inserir na direita, se x for maior que a raiz.
         }
 
-        //Retornar a raiz da subárvore (elemento que  vai ser inserido, ou na esquerda ou na direita)
-        return i;
+        //Retornar a raiz da sub-árvore
+        return i; 
     }
 
-    //Método public que chama o private, passando a raiz e o elemento a ser pesquisado.
-    public boolean pesquisar (int x) {
+    //Método public e private para pesquisar
+    public boolean pesquisar(int x) {
+        //Retornar a pesquisa do elemento
         return pesquisar(raiz, x); 
     }
 
-    //Método private que vai pesquisar o elemento. 
-    private boolean pesquisar (No i, int x) {
-        //Verificar se a raiz está apontando para null
+    private boolean pesquisar(No i,int x) {
+        //Se estiver vazia
         if (i == null) {
-            return false; 
-        } else if (x == i.elemento) { //Se o elemento x for igual a raiz da subárvore, retornar true.
-            return true; 
-        } else if (x < i.elemento) {
-            return pesquisar(i.esq, x); //Se o elemento x for menor que a raiz da subárvore, pesquisar na esquerda.
-        } else {
-            return pesquisar(i.dir, x); //Se o elemento x for maior que a raiz da subárvore, pesquisar na direita.
+            return false; //retorna falso
+        }
+
+        //Se a raiz for o elemento procurado
+        else if (x == i.elemento) {
+            return true; //Retornar verdadeiro
+        }
+
+        //Se o elemento for menor que a raiz
+        else if (x < i.elemento) {
+            return pesquisar(i.esq, x); //Pesquisar o elemento na esquerda da raiz
+        }
+
+        //Se o elemento for maior que a raiz
+        else {
+            return pesquisar(i.dir, x); //Pesquisar elemento a direita da raiz
         }
     }
 
-    //Método public que chama o private, preOrdem, passando a raiz da árvore. 
+    //Método public e private para imprimir PRÉ-ORDEM
     public void preOrdem() {
-        preOrdem(raiz); 
+        //Ver se ta vazia
+        if (raiz == null) {
+            System.out.println("Arvore Vazia");
+        } else {
+            //Passa somente a raiz
+            preOrdem(raiz); 
+        }
     }
 
-    //Método private para imprimir os elementos da árvore por caminhamento pré-ordem. 
-    private void preOrdem (No i) {
-        //Se a raiz apontar para null, imprimir V.
-        if (i == null) {
-            System.out.print("V");
-        }
-
-        //Se a raiz tiver algum elemento
+    private void preOrdem(No i) {
+        //Se não estiver vazia
         if (i != null) {
-            System.out.print(i.elemento + " "); //Imprimir o elemento da raiz mais o espaço. 
+            //Primeiro imprimir raiz
+            System.out.println(i.elemento + " "); 
+            
+            //Depois imprimir os elementos da esquerda, depois os da direita
             preOrdem(i.esq); 
             preOrdem(i.dir); 
         }
     }
 
-    //Método public que chama o private, posOrdem, passando a raiz da árvore.
-    public void posOrdem() {
-        posOrdem(raiz); 
-    }
-
-    //Método private para imprimir os elementos da árvore por caminhamento pós-ordem.
-    private void posOrdem (No i) {
-        //Verificar se a raiz aponta para null 
-        if (i == null) {
-            System.out.print("V");
-        }
-
-        //Se a raiz tiver algum elemento
-        if (i != null) {
-            posOrdem(i.esq); 
-            posOrdem(i.dir); 
-            System.out.print(i.elemento + " "); //Imprimir o elemento da raiz mais o espaço. 
-        }
-    }
-
-    //Método public que chama o private, emOrdem, passando a raiz da árvore.
+    //Método public e private para imprimir EM-ORDEM
     public void emOrdem() {
-        emOrdem(raiz); 
+        //Se estiver vazia
+        if (raiz == null) {
+            System.out.println("Arvore Vazia");
+        } else {
+            emOrdem(raiz); 
+        }
     }
 
-    //Método private para imprimir os elementos da árvore por caminhamento em-ordem.
-    private void emOrdem (No i) {
-        //Verificar se a raiz aponta para null
-        if (i == null) {
-            System.out.print("V");
-        }
-
-        //Se a raiz tiver algum elemento
+    private void emOrdem(No i) {
         if (i != null) {
-            emOrdem(i.esq);
-            System.out.print(i.elemento + " "); 
-            emOrdem(i.dir);
+            //Imprimir elementos da esquerda, raiz, e depois os da direita
+            emOrdem(i.esq); 
+            System.out.println(i.elemento + " ");
+            emOrdem(i.dir); 
+        }
+    }
+
+    //Método public e private para imprimir POS-ORDEM
+    public void posOrdem() {
+        if (raiz == null) {
+            System.out.println("Arvore Vazia");
+        } else {
+            posOrdem(raiz); 
+        }
+    }
+
+    private void posOrdem(No i) {
+        if (i != null) {
+            //Imprimir os da esquerda, depois os da direita e por fim a raiz
+            posOrdem(i.esq); 
+            posOrdem(i.dir);
+            System.out.println(i.elemento + " "); 
         }
     }
 }
 
-public class Exercicio1 {
+//Classe principal 
+public class ArvoreCompleta {
+    //Main
     public static void main(String args[]) {
-        //Criar uma nova árvore binária
-        ArvoreBinaria arvore = new ArvoreBinaria(); 
+        //Criar o objeto árvore
+        Arvore arvore = new Arvore(); //Do tipo árvore, classe acima desta.
 
-        //Criar o objeto scanner
-        Scanner sc = new Scanner(System.in);
+        //Inserir elementos
+        arvore.inserir(50);
+        arvore.inserir(30);
+        arvore.inserir(70);
+        arvore.inserir(20);
+        arvore.inserir(40);
+        arvore.inserir(60);
+        arvore.inserir(80);
 
-        //Verificar a letra que o usuário digitou, que vai decidir a operação a ser realizada.
-        while (sc.hasNext()) {
-            //Ler a letra digitada pelo usuário.
-            String letra = sc.next(); 
+        //Imprimir pré-ordem
+        arvore.preOrdem();
+        System.out.println();
 
-            //Se a letra for I de inserir. 
-            if (letra.equals("I")) {
-                int x = sc.nextInt(); //Ler o número a ser inserido. 
-                arvore.inserir(x); //Inserir o número na árvore.
-            }  else if (letra.equals("P")) {
-                int y = sc.nextInt(); //Ler o número a ser pesquisado. 
-                boolean resultado = arvore.pesquisar(y); //Pesquisar o número na árvore
+        //Imprimir em orde
+        arvore.emOrdem(); 
+        System.out.println();
 
-                //Imprimir S caso o número esteja na árvore e N caso contrário.
-                if (resultado) {
-                    System.out.println("S");
-                } else {
-                    System.out.println("N");
-                }
-            } else if (letra.equals("PRE")) { //Se a letra for PRE, imprimir os elementos da esquerda pra direita, começando da raiz. 
-                arvore.preOrdem(); //Imprimir os elementos da árvore por caminhamento pré-ordem.
-                System.out.println(); //Pular linha após imprimir a árvore.
-            } else if (letra.equals("POS")) { //Se a letra for POS, imprimir os elementos da esquerda pra direita, começando pelos elementos mais a esquerda e terminando na raiz.
-                arvore.posOrdem(); //Imprimir os elementos da árvore por caminhamento pós-ordem.
-                System.out.println(); //Pular linha após imprimir a árvore.
-            } else if (letra.equals("EM")) { //Se a letra for EM, imprimir os elementos da esquerda pra direita, começando pelos elementos mais a esquerda, depois a raiz e terminando pelos elementos mais a direita.
-                arvore.emOrdem(); //Imprimir os elementos da árvore por caminhamento em-ordem.
-                System.out.println(); //Pular linha após imprimir a árvore.
-            }
-        }
+        //Imprimir pós-ordem
+        arvore.posOrdem(); 
+        System.out.println();
 
-        sc.close(); 
+        //Pesquisar elementos
+        arvore.pesquisar(40);
+        arvore.pesquisar(100);
+        System.out.println(); 
     }
 }
