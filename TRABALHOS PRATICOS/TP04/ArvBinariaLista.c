@@ -267,7 +267,7 @@ void pesquisar(No* raiz, char* nome) {
             char buf_rest[2048];
             formatar_restaurante(cel->r, buf_rest);
             caminho[ci] = '\0';
-            printf("%s SIM %s\n", caminho, buf_rest); return;
+            printf("%s SIM\n", caminho); return;
         } else if (cmp < 0) {
             /* lista ordenada: elemento viria antes — nao esta na lista */
             break;
