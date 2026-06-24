@@ -1,258 +1,390 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <time.h>
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
-static const char* MATRICULA = "889989";
-static long long comparacoesPesquisa = 0;
+public class HashIndireta {
+	public static void main(String[] args) throws Exception{
 
-typedef struct { int ano; int mes; int dia; } Data;
-typedef struct { int hora; int minuto; } Hora;
+        colecaoRestaurantes col = colecaoRestaurantes.lerCsv();
+		Scanner sc = new Scanner(System.in);
 
-typedef struct {
-    int id;
-    char* nome;
-    char* cidade;
-    int capacidade;
-    double avaliacao;
-    int n_tipos_cozinha;
-    char** tipos_cozinha;
-    int faixa_preco;
-    Hora horario_abertura;
-    Hora horario_fechamento;
-    Data data_abertura;
-    bool aberto;
-} Restaurante;
+		int[] compMov = new int[2];
+		String nomeArquivo = "889989_arvore_trie_hash.txt";
+		Trie a = new Trie();
+		int id = sc.nextInt();
 
-typedef struct {
-    int tamanho;
-    Restaurante** restaurantes;
-} Colecao_Restaurantes;
+		while(id > 0){
+			a.inserir(col.restaurantes[id - 1]);
+			id = sc.nextInt();
+		}
 
-Data parse_data(char* s) {
-    Data d; d.ano = 0; d.mes = 0; d.dia = 0;
-    int parte = 0;
-    for (int i = 0; s[i]; i++) {
-        char c = s[i];
-        if (c == '-') parte++;
-        else if (c >= '0' && c <= '9') {
-            int dig = c - '0';
-            if (parte == 0) d.ano = d.ano * 10 + dig;
-            else if (parte == 1) d.mes = d.mes * 10 + dig;
-            else d.dia = d.dia * 10 + dig;
+		long inicio = System.currentTimeMillis();
+
+		sc.nextLine();
+		String nome = sc.nextLine();
+
+		while(nome.equals("FIM") == false){
+			Restaurante resp = a.pesquisar(nome, compMov);
+
+			if(resp != null){
+				System.out.println("SIM " + resp.formatar_restaurante());
+			}
+			else{
+				System.out.println("NAO");
+			}
+
+			nome = sc.nextLine();
+		}
+
+		long tempo = System.currentTimeMillis() - inicio;
+
+		FileWriter writer = new FileWriter(nomeArquivo);
+        writer.write("889989" + "\t" + compMov[0] + "\t" + compMov[1] + "\t" + tempo);
+        writer.close();
+
+        sc.close();
+	}	
+}
+
+class Data{
+	int dia, mes, ano;
+
+	public static Data parseData(String s){
+        Data d = new Data();
+		d.ano = Integer.parseInt("" + s.charAt(0) + s.charAt(1) + s.charAt(2) + s.charAt(3));					
+		d.mes = Integer.parseInt("" + s.charAt(5) + s.charAt(6));
+		d.dia = Integer.parseInt("" + s.charAt(8) + s.charAt(9));
+
+		return d;
+	}
+
+	public String formatar_data(){
+		String s = String.format("%02d/%02d/%04d", dia, mes, ano);
+		return s;
+	}
+
+	public String invFormatar_data(){
+		String s = String.format("%04d/%02d/%02d", ano, mes, dia);
+		return s;
+	}
+}
+
+class Hora{
+	int hora, minuto;
+
+	public static Hora parseHora(String s){
+        Hora h = new Hora();
+		h.hora = Integer.parseInt("" + s.charAt(0) + s.charAt(1));
+		h.minuto = Integer.parseInt("" + s.charAt(3) + s.charAt(4));
+
+        return h;
+	}
+
+	public String formatar_hora(){
+		String s = String.format("%02d:%02d", hora, minuto);
+		return s;
+	}
+}
+
+class Restaurante{
+	int id;
+	String nome;
+	String cidade;
+	int capacidade;
+	double avaliacao;
+	String[] tiposCozinha;
+	String faixaPreco;
+	Hora horarioAbertura;
+	Hora horarioFechamento;
+	Data dataAbertura;
+	boolean aberto;
+
+	public static Restaurante parseRestaurante(String s){
+        Restaurante r = new Restaurante();
+        int i = 0, tam = s.length();
+        String[] valores = new String[10];
+
+        for(int j = 0; j < 10; j++){
+            valores[j] = "";
+        }
+
+        for(int j = 0; j < tam; j++){
+            if(s.charAt(j) != ','){
+				valores[i] += s.charAt(j);
+			}
+            else{
+				i++;
+			}
+        }
+
+        r.id = Integer.parseInt(valores[0]);
+        r.nome = valores[1];
+        r.cidade = valores[2];
+        r.capacidade = Integer.parseInt(valores[3]);
+        r.avaliacao = Double.parseDouble(valores[4]);
+        r.tiposCozinha = valores[5].split(";");
+        r.faixaPreco = valores[6];
+
+		String h[] = valores[7].split("-");
+        r.horarioAbertura = Hora.parseHora(h[0]);
+        r.horarioFechamento = Hora.parseHora(h[1]);
+
+        r.dataAbertura = Data.parseData(valores[8]);
+        r.aberto = Boolean.parseBoolean(valores[9]);
+
+        return r;
+    }
+
+	public String formatar_restaurante(){
+		String s = "[" + id + " ## "+  nome + " ## " + cidade + " ## " + capacidade + " ## " + avaliacao + " ## [" + String.join(",", tiposCozinha)
+			+ "] ## " + faixaPreco + " ## " + horarioAbertura.formatar_hora() + "-" + horarioFechamento.formatar_hora()
+			+ " ## " + dataAbertura.formatar_data() + " ## "
+			+ aberto + "]";
+
+		return s;
+	}
+}
+
+// COLEÇÃO RESTAURANTES ###############################################
+
+class colecaoRestaurantes{
+	Restaurante restaurantes[];
+
+	public void lerCsv(String path) throws FileNotFoundException{
+		Scanner sc = new Scanner(new File(path));
+		restaurantes = new Restaurante[500];
+
+		sc.nextLine();
+
+		for(int i = 0; i < 500; i++){
+            String s = sc.nextLine();
+            restaurantes[i] = Restaurante.parseRestaurante(s);
+        }
+
+		sc.close();
+	}
+
+	public static colecaoRestaurantes lerCsv() throws FileNotFoundException{
+		colecaoRestaurantes col = new colecaoRestaurantes();
+		String path = "/tmp/restaurantes.csv";
+
+		col.lerCsv(path);
+
+		return col;
+	}
+
+	public void mostrar(int tam){
+		for(int i = 0; i < tam; i++){
+			String s = this.restaurantes[i].formatar_restaurante();
+			System.out.println(s);
+		}
+	}
+
+	public void selecaoParcial(int k, int[]compMov, int tam){
+		for(int i = 0; i < k; i++){
+			int menor = i;
+
+			for(int j = i + 1; j < tam; j++){
+				compMov[0]++;
+
+				if(this.restaurantes[menor].nome.compareTo(this.restaurantes[j].nome) > 0){
+					menor = j;
+				}
+			}
+
+			this.swap(i, menor);
+			compMov[1]++;
+		}
+	}
+
+	public void quicksort(int[] coMov, int esq, int dir){
+    	int i = esq, j = dir;
+    	Restaurante pivoR = this.restaurantes[(esq + dir) / 2];
+    	double pivo = pivoR.avaliacao;
+
+    	while(i <= j){
+        	while(this.restaurantes[i].avaliacao < pivo || (this.restaurantes[i].avaliacao == pivo &&
+            this.restaurantes[i].nome.compareTo(pivoR.nome) < 0)){
+            	i++;
+				coMov[0]++;
+        	}
+
+        	while(this.restaurantes[j].avaliacao > pivo || (this.restaurantes[j].avaliacao == pivo &&
+            this.restaurantes[j].nome.compareTo(pivoR.nome) > 0)){
+            	j--;
+				coMov[0]++;
+        	}
+
+        	if(i <= j){
+            	swap(i, j);
+            	coMov[1]++;
+            	i++;
+				j--;
+   			}
+    	}
+
+    	if(esq < j){
+    		quicksort(coMov, esq, j);
+		}
+
+    	if(i < dir){
+    		quicksort(coMov, i, dir);
+		}
+	}
+
+	public void quicksortParcial(int[]coMov, int esq, int dir){
+    	int i = esq, j = dir;
+    	double pivo = this.restaurantes[(esq + dir) / 2].avaliacao;
+    	int k = 9;
+		Restaurante pivoR = this.restaurantes[(esq + dir) / 2];
+
+    	while(i <= j) {
+        	while(this.restaurantes[i].avaliacao < pivo || (this.restaurantes[i].avaliacao == pivo && this.restaurantes[i].nome.compareTo(pivoR.nome) < 0)){
+				i++;
+				coMov[0]++;
+			}
+
+        	while(this.restaurantes[j].avaliacao > pivo || (this.restaurantes[j].avaliacao == pivo && this.restaurantes[j].nome.compareTo(pivoR.nome) > 0)){
+				j--;
+				coMov[0]++;
+			}
+
+        	if(i <= j) {
+            	swap(i, j);
+				coMov[1]++;
+            	i++;
+            	j--;
+        	}
+    	}
+
+    	if(esq < j && j >= k){
+    		quicksortParcial(coMov, esq, j);
+		}
+
+    	if(i < dir && i < k){
+    		quicksortParcial(coMov, i, dir);
+		}
+	}
+
+	public int comparaData(int i, int j){
+		String d1 = this.restaurantes[i].dataAbertura.invFormatar_data();
+		String d2 = this.restaurantes[j].dataAbertura.invFormatar_data();
+		int resp = d1.compareTo(d2);
+
+		if(resp == 0){
+			resp = this.restaurantes[i].nome.compareTo(this.restaurantes[j].nome);
+		}
+
+		return resp;
+	}
+
+	public void swap(int i, int j){
+		Restaurante tmp = this.restaurantes[i];
+		this.restaurantes[i] = this.restaurantes[j];
+		this.restaurantes[j] = tmp;
+	}
+
+	public static boolean pesquisaS(String s, colecaoRestaurantes array, int tamanho){
+		boolean resp = false;
+
+		for(int i = 0; i < tamanho; i++){
+    		if(s.equals(array.restaurantes[i].nome)){
+				i = tamanho;
+				resp = true;
+			}
+		}
+
+		return resp;
+	}
+}
+
+// TRIE COM HASH #######################################################
+
+class No {
+    public char elemento;
+    public int tamanho = 255;
+    public No[] prox;
+    public boolean folha;
+    public Restaurante restaurante;
+
+    public No() {
+        this(' ');
+    }
+
+    public No(char elemento) {
+        this.elemento = elemento;
+        prox = new No[tamanho];
+
+        for (int i = 0; i < tamanho; i++) {
+            prox[i] = null;
+        }
+
+        folha = false;
+        restaurante = null;
+    }
+
+    public static int hash(char x) {
+        return (int) x;
+    }
+}
+
+class Trie {
+    private No raiz;
+
+    public Trie() {
+        raiz = new No();
+    }
+
+    public void inserir(Restaurante r) throws Exception {
+        inserir(r.nome, r, raiz, 0);
+    }
+
+    private void inserir(String s, Restaurante r, No no, int i) throws Exception {
+        int pos = No.hash(s.charAt(i));
+
+        if (no.prox[pos] == null) {
+            no.prox[pos] = new No(s.charAt(i));
+        }
+
+        if (i == s.length() - 1) {
+            no.prox[pos].folha = true;
+            no.prox[pos].restaurante = r;
+        } 
+        else {
+            inserir(s, r, no.prox[pos], i + 1);
         }
     }
-    return d;
-}
 
-void formatar_data(Data* data, char* buffer) {
-    sprintf(buffer, "%02d/%02d/%04d", data->dia, data->mes, data->ano);
-}
-
-Hora parse_hora(char* s) {
-    Hora h; h.hora = 0; h.minuto = 0;
-    int parte = 0;
-    for (int i = 0; s[i]; i++) {
-        char c = s[i];
-        if (c == ':') parte++;
-        else if (c >= '0' && c <= '9') {
-            int dig = c - '0';
-            if (parte == 0) h.hora = h.hora * 10 + dig;
-            else h.minuto = h.minuto * 10 + dig;
-        }
+    public Restaurante pesquisar(String s, int[] cM) throws Exception {
+        return pesquisar(s, raiz, 0, cM);
     }
-    return h;
-}
 
-void formatar_hora(Hora* hora, char* buffer) {
-    sprintf(buffer, "%02d:%02d", hora->hora, hora->minuto);
-}
+    private Restaurante pesquisar(String s, No no, int i, int[] cM) throws Exception {
+        Restaurante resp = null;
 
-static int parse_int(char* s) {
-    int r = 0;
-    for (int i = 0; s[i]; i++)
-        if (s[i] >= '0' && s[i] <= '9') r = r * 10 + (s[i] - '0');
-    return r;
-}
+        if (i < s.length()) {
+            char c = s.charAt(i);
+            int pos = No.hash(c);
 
-static double parse_double(char* s) {
-    double r = 0; bool dec = false; double div = 10.0;
-    for (int i = 0; s[i]; i++) {
-        char c = s[i];
-        if (c >= '0' && c <= '9') {
-            int dig = c - '0';
-            if (!dec) r = r * 10 + dig;
-            else { r += dig / div; div *= 10; }
-        } else if (c == '.') dec = true;
-    }
-    return r;
-}
+            cM[0]++;
 
-static char* duplicar_string(char* s) {
-    int len = 0;
-    while (s[len]) len++;
-    char* novo = (char*) malloc((len + 1) * sizeof(char));
-    for (int i = 0; i <= len; i++) novo[i] = s[i];
-    return novo;
-}
+            if (no.prox[pos] != null) {
+                System.out.print(c + " ");
 
-Restaurante* parse_restaurante(char* s) {
-    Restaurante* r = (Restaurante*) malloc(sizeof(Restaurante));
-    char campos[10][512];
-    int campo = 0, bi = 0;
-    for (int i = 0; s[i] && s[i] != '\n' && s[i] != '\r'; i++) {
-        if (s[i] == ',') { campos[campo][bi] = '\0'; campo++; bi = 0; }
-        else campos[campo][bi++] = s[i];
-    }
-    campos[campo][bi] = '\0';
-    r->id = parse_int(campos[0]);
-    r->nome = duplicar_string(campos[1]);
-    r->cidade = duplicar_string(campos[2]);
-    r->capacidade = parse_int(campos[3]);
-    r->avaliacao = parse_double(campos[4]);
-    r->n_tipos_cozinha = 1;
-    for (int i = 0; campos[5][i]; i++) if (campos[5][i] == ';') r->n_tipos_cozinha++;
-    r->tipos_cozinha = (char**) malloc(r->n_tipos_cozinha * sizeof(char*));
-    int ti = 0, ci = 0; char tipo_buf[256];
-    for (int i = 0; ; i++) {
-        char c = campos[5][i];
-        if (c == ';' || c == '\0') {
-            tipo_buf[ci] = '\0';
-            r->tipos_cozinha[ti++] = duplicar_string(tipo_buf);
-            ci = 0;
-            if (c == '\0') break;
-        } else tipo_buf[ci++] = c;
-    }
-    r->faixa_preco = 0;
-    for (int i = 0; campos[6][i]; i++) if (campos[6][i] == '$') r->faixa_preco++;
-    int dash_pos = -1;
-    for (int i = 0; campos[7][i]; i++) if (campos[7][i] == '-') { dash_pos = i; break; }
-    char hor_ab[6], hor_fech[6];
-    for (int i = 0; i < dash_pos; i++) hor_ab[i] = campos[7][i];
-    hor_ab[dash_pos] = '\0';
-    int j = 0;
-    for (int i = dash_pos + 1; campos[7][i]; i++) hor_fech[j++] = campos[7][i];
-    hor_fech[j] = '\0';
-    r->horario_abertura = parse_hora(hor_ab);
-    r->horario_fechamento = parse_hora(hor_fech);
-    r->data_abertura = parse_data(campos[8]);
-    r->aberto = (campos[9][0] == 't');
-    return r;
-}
+                if (i == s.length() - 1) {
+                    cM[0]++;
 
-void formatar_restaurante(Restaurante* r, char* buffer) {
-    char hor_ab[6], hor_fech[6], data_ab[11];
-    formatar_hora(&r->horario_abertura, hor_ab);
-    formatar_hora(&r->horario_fechamento, hor_fech);
-    formatar_data(&r->data_abertura, data_ab);
-    char tipos[512]; int ti = 0;
-    for (int i = 0; i < r->n_tipos_cozinha; i++) {
-        if (i > 0) tipos[ti++] = ',';
-        for (int k = 0; r->tipos_cozinha[i][k]; k++) tipos[ti++] = r->tipos_cozinha[i][k];
-    }
-    tipos[ti] = '\0';
-    char fp[5];
-    for (int i = 0; i < r->faixa_preco; i++) fp[i] = '$';
-    fp[r->faixa_preco] = '\0';
-    sprintf(buffer, "[%d ## %s ## %s ## %d ## %.1f ## [%s] ## %s ## %s-%s ## %s ## %s]",
-            r->id, r->nome, r->cidade, r->capacidade, r->avaliacao,
-            tipos, fp, hor_ab, hor_fech, data_ab, r->aberto ? "true" : "false");
-}
-
-void ler_csv_colecao(Colecao_Restaurantes* colecao, char* path) {
-    FILE* f = fopen(path, "r");
-    if (!f) return;
-    colecao->restaurantes = (Restaurante**) malloc(2000 * sizeof(Restaurante*));
-    colecao->tamanho = 0;
-    char linha[1024];
-    fgets(linha, sizeof(linha), f);
-    while (fgets(linha, sizeof(linha), f))
-        if (linha[0] != '\n' && linha[0] != '\0')
-            colecao->restaurantes[colecao->tamanho++] = parse_restaurante(linha);
-    fclose(f);
-}
-
-Colecao_Restaurantes* ler_csv() {
-    Colecao_Restaurantes* c = (Colecao_Restaurantes*) malloc(sizeof(Colecao_Restaurantes));
-    ler_csv_colecao(c, "/tmp/restaurantes.csv");
-    return c;
-}
-
-/* ---------- Hash Indireta com Lista Simples ---------- */
-/* tabela[0..30]: cada posicao aponta para uma lista encadeada */
-
-#define TAM_TAB 31
-
-typedef struct Celula {
-    Restaurante* r;
-    struct Celula* prox;
-} Celula;
-
-static Celula* tabela[TAM_TAB];
-
-static int hash_nome(char* nome) {
-    int soma = 0;
-    for (int i = 0; nome[i]; i++) soma += (int)(unsigned char)nome[i];
-    return soma % TAM_TAB;
-}
-
-void hash_inserir(Restaurante* r) {
-    int pos = hash_nome(r->nome);
-    Celula* nova = (Celula*) malloc(sizeof(Celula));
-    nova->r = r;
-    nova->prox = tabela[pos]; /* insere no inicio da lista */
-    tabela[pos] = nova;
-}
-
-void hash_pesquisar(char* nome) {
-    int pos = hash_nome(nome);
-    Celula* atual = tabela[pos];
-    while (atual != NULL) {
-        comparacoesPesquisa++;
-        if (strcmp(atual->r->nome, nome) == 0) {
-            char buffer[2048];
-            formatar_restaurante(atual->r, buffer);
-            printf("%d\t%s\n", pos, buffer);
-            return;
-        }
-        atual = atual->prox;
-    }
-    printf("-1\n");
-}
-
-int main() {
-    Colecao_Restaurantes* colecao = ler_csv();
-
-    for (int i = 0; i < TAM_TAB; i++) tabela[i] = NULL;
-
-    int id;
-    while (scanf("%d", &id) == 1 && id != -1) {
-        for (int i = 0; i < colecao->tamanho; i++) {
-            if (colecao->restaurantes[i]->id == id) {
-                hash_inserir(colecao->restaurantes[i]); break;
+                    if (no.prox[pos].folha == true) {
+                        resp = no.prox[pos].restaurante;
+                    }
+                } 
+                else {
+                    resp = pesquisar(s, no.prox[pos], i + 1, cM);
+                }
             }
         }
+
+        return resp;
     }
-
-    { int c; while ((c = getchar()) != '\n' && c != EOF); }
-
-    clock_t t0 = clock();
-    char nome_buf[512];
-    while (fgets(nome_buf, sizeof(nome_buf), stdin)) {
-        int len = 0;
-        while (nome_buf[len] && nome_buf[len] != '\n' && nome_buf[len] != '\r') len++;
-        nome_buf[len] = '\0';
-        if (len == 0) continue;
-        if (strcmp(nome_buf, "FIM") == 0) break;
-        hash_pesquisar(nome_buf);
-    }
-    clock_t t1 = clock();
-    double tempo = ((double)(t1 - t0)) / CLOCKS_PER_SEC * 1000.0;
-
-    FILE* log = fopen("889989_hash_indireta.txt", "w");
-    fprintf(log, "%s\t%lld\t%.2f\n", MATRICULA, comparacoesPesquisa, tempo);
-    fclose(log);
-
-    return 0;
 }
