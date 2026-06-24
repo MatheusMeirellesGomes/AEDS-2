@@ -247,15 +247,15 @@ void trie_pesquisar(NoTrie* raiz, char* nome) {
         NoTrie* filho = buscar_filho(atual, c);
         comparacoesPesquisa++;
         if (filho == NULL) {
-            /* imprime chars visitados ate aqui incluindo o que falhou, depois NAO */
-            for (int k = 0; k <= i; k++) printf("%c ", nome[k]);
             printf("NAO\n"); return;
         }
         printf("%c ", c);
         atual = filho;
     }
     if (atual->fim) {
-        printf("SIM\n");
+        char buffer[2048];
+        formatar_restaurante(atual->restaurante, buffer);
+        printf("SIM %s\n", buffer);
     } else {
         printf("NAO\n");
     }
