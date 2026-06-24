@@ -213,7 +213,7 @@ void hash_pesquisar(char* nome) {
         if (strcmp(atual->r->nome, nome) == 0) {
             char buffer[2048];
             formatar_restaurante(atual->r, buffer);
-            printf("%d\t%s\n", pos, buffer);
+            printf("%s\n", buffer);
             return;
         }
         atual = atual->prox;
