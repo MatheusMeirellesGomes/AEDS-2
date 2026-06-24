@@ -243,7 +243,6 @@ public class ArvTrieAvrBinaria {
             NoTrie filho = buscarFilho(atual.raizFilhos, c);
             comparacoesPesquisa++;
             if (filho == null) {
-                sb.append(c).append(' ');
                 sb.append("NAO");
                 return sb.toString();
             }
@@ -251,7 +250,7 @@ public class ArvTrieAvrBinaria {
             atual = filho;
         }
         if (atual.fim) {
-            sb.append("SIM");
+            sb.append("SIM ").append(atual.restaurante.formatar());
         } else {
             sb.append("NAO");
         }
