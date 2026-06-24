@@ -251,7 +251,7 @@ public class ArvTrieAvrBinaria {
             atual = filho;
         }
         if (atual.fim) {
-            sb.append("SIM ").append(atual.restaurante.formatar());
+            sb.append("SIM");
         } else {
             sb.append("NAO");
         }
