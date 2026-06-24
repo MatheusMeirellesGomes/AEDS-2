@@ -295,6 +295,7 @@ public class ArvBinariaAvrBinaria {
         sb.append(" ").append(avlPath);
 
         if (avlEncontrado) {
+            sb.append(" ").append(avlRestauranteFormatado);
             encontrado[0] = true;
             return;
         }
