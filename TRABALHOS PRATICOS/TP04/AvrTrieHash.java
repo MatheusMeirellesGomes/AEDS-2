@@ -247,8 +247,6 @@ public class AvrTrieHash {
             NoTrie filho = atual.buscarFilho(c);
             comparacoesPesquisa++;
             if (filho == null) {
-                /* imprime chars visitados ate o char que nao existe */
-                sb.append(c).append(' ');
                 sb.append("NAO");
                 return sb.toString();
             }
@@ -256,7 +254,7 @@ public class AvrTrieHash {
             atual = filho;
         }
         if (atual.fim) {
-            sb.append("SIM");
+            sb.append("SIM ").append(atual.restaurante.formatar());
         } else {
             sb.append("NAO");
         }
