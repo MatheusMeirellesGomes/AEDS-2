@@ -295,7 +295,6 @@ public class ArvBinariaAvrBinaria {
         sb.append(" ").append(avlPath);
 
         if (avlEncontrado) {
-            sb.append(" ").append(avlRestauranteFormatado);
             encontrado[0] = true;
             return;
         }
@@ -314,18 +313,35 @@ public class ArvBinariaAvrBinaria {
         return resultado.length() > 0 ? resultado : "NAO";
     }
 
-    static void emOrdemAVL(NoAVL raiz) {
+    static void coletarAVL(NoAVL raiz, Restaurante[] arr, int[] idx) {
         if (raiz == null) return;
-        emOrdemAVL(raiz.esq);
-        System.out.println(raiz.restaurante.formatar());
-        emOrdemAVL(raiz.dir);
+        coletarAVL(raiz.esq, arr, idx);
+        arr[idx[0]++] = raiz.restaurante;
+        coletarAVL(raiz.dir, arr, idx);
     }
 
-    static void emOrdem(NoExterno raiz) {
+    static void coletarTodos(NoExterno raiz, Restaurante[] arr, int[] idx) {
         if (raiz == null) return;
-        emOrdem(raiz.esq);
-        emOrdemAVL(raiz.raizAvl);
-        emOrdem(raiz.dir);
+        coletarTodos(raiz.esq, arr, idx);
+        coletarAVL(raiz.raizAvl, arr, idx);
+        coletarTodos(raiz.dir, arr, idx);
+    }
+
+    static void emOrdem(NoExterno raiz, int total) {
+        Restaurante[] arr = new Restaurante[total];
+        int[] idx = {0};
+        coletarTodos(raiz, arr, idx);
+        /* ordenacao por nome (insertion sort) */
+        for (int i = 1; i < idx[0]; i++) {
+            Restaurante tmp = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j].getNome().compareTo(tmp.getNome()) > 0) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = tmp;
+        }
+        for (int i = 0; i < idx[0]; i++) System.out.println(arr[i].formatar());
     }
 
     public static void main(String[] args) throws IOException {
@@ -353,7 +369,7 @@ public class ArvBinariaAvrBinaria {
         long t1 = System.nanoTime();
         sc.close();
 
-        emOrdem(raiz);
+        emOrdem(raiz, tamanho);
 
         PrintWriter pw = new PrintWriter(new FileWriter(MATRICULA + "_hibrida_arvore_arvore.txt"));
         pw.println(MATRICULA + "\t" + comparacoesPesquisa + "\t" + (t1 - t0));
